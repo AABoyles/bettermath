@@ -1,0 +1,22 @@
+{
+  "name": "BetterMath",
+  "version": "0.0.1",
+  "description": "Basic Mathematical Operations for Arrays in Javascript",
+  "main": "BetterMath.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AABoyles/BetterMath.git"
+  },
+  "author": "Tony Boyles",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AABoyles/BetterMath/issues"
+  },
+  "homepage": "https://github.com/AABoyles/BetterMath#README.md",
+  "dependencies": {
+    "lodash": "^4.17.4"
+  }
+}
