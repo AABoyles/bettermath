@@ -1,5 +1,5 @@
 {
-  "name": "BetterMath",
+  "name": "bettermath",
   "version": "0.0.1",
   "description": "Basic Mathematical Operations for Arrays in Javascript",
   "main": "BetterMath.js",

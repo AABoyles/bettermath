@@ -17,13 +17,14 @@
 
 (function() {
 
+  // If we're in the browser, make sure you've included lodash
   if( typeof window !== 'undefined' && window._ ) {
     var _ = window._
   }
 
   if( typeof _ === 'undefined' ) {
     if( typeof require !== 'undefined' ) {
-      _ = require('lodash');
+      var _ = require('lodash');
     } else {
       throw new Error('BetterMath requires lodash');
     }
