@@ -2,20 +2,20 @@
   "name": "bettermath",
   "version": "0.0.1",
   "description": "Basic Mathematical Operations for Arrays in Javascript",
-  "main": "BetterMath.js",
+  "main": "bettermath.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AABoyles/BetterMath.git"
+    "url": "git+https://github.com/AABoyles/bettermath.git"
   },
   "author": "Tony Boyles",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/AABoyles/BetterMath/issues"
+    "url": "https://github.com/AABoyles/bettermath/issues"
   },
-  "homepage": "https://github.com/AABoyles/BetterMath#README.md",
+  "homepage": "https://github.com/AABoyles/bettermath#README.md",
   "dependencies": {
     "lodash": "^4.17.4"
   }

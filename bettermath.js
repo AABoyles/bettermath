@@ -1,17 +1,7 @@
 // *`Math`, but Better.*
 //
-// BetterMath.js is a browser- and node- compatible javascript module for
-// a variety of useful numerical computations on arrays of numbers.
-//
-//It's designed to work seamlessly as a mixin with the standard `Math` object,
-//However, I know that messing with standard globals makes some people sick to
-//their stomachs, so it doesn't do it automatically.
-//
-//If you're using it in the browser, you can access it from the `math` global.
-//(Note the lower-case 'm').
-//
-//It you're working in [node](http://nodejs.com), you can `require` it into
-//whatever you want.
+// bettermath is a browser- and node- compatible javascript module for a variety
+// of useful numerical computations on arrays of numbers.
 
 'use strict';
 
@@ -26,9 +16,19 @@
     if( typeof require !== 'undefined' ) {
       var _ = require('lodash');
     } else {
-      throw new Error('BetterMath requires lodash');
+      throw new Error('bettermath requires lodash');
     }
   }
+
+  //It's designed to work seamlessly as a mixin with the standard `Math` object,
+  //However, I know that messing with standard globals makes some people sick to
+  //their stomachs, so it doesn't do it automatically.
+  //
+  //If you're using it in the browser, you can access it from the `math` global.
+  //(Note the lower-case 'm').
+  //
+  //It you're working in [node](http://nodejs.com), you can `require` it into
+  //whatever you want.
 
   var math = {};
 
