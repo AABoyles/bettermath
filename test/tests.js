@@ -1,3 +1,22 @@
+module("Helpers");
+
+test("Array", () => {
+  expect(4);
+  ok(math.isArray([]), "Empty Array");
+  ok(math.isArray([1,2,3,4,5,6]), "Populated Array");
+  ok(!math.isArray({a: 7}), "Non-Array Object");
+  ok(!math.isArray("Foobar"), "Non-Array String");
+});
+
+module("Pluck");
+
+test("Pluck", () => {
+  expect(3);
+  equal(math.pluck(4), 4, "Simple Numbers");
+  deepEqual(math.pluck([1,2,3,4]), [1,2,3,4], "Simple Array");
+  deepEqual(math.pluck([{a:1},{a:2},{a:3},{a:4}], 'a'), [1,2,3,4], "Array of objects");
+});
+
 module("Even/Odd");
 
 test("Numbers", function() {
@@ -10,20 +29,47 @@ test("Numbers", function() {
 
 test("Arrays", function() {
   expect(2);
-  ok(math.isEven(4));
-  ok(!math.isEven(5));
+  deepEqual(math.isEven([4, 501]), [true, false]);
+  deepEqual(math.isOdd([5, 502]), [true, false]);
 });
 
 test("Objects", function() {
   expect(2);
-  ok(math.isEven(4));
-  ok(!math.isEven(5));
+  deepEqual(math.isEven([{a: 4}, {a: 501}], 'a'), [true, false]);
+  deepEqual(math.isOdd([{a: 5}, {a: 502}], 'a'), [true, false]);
 });
 
 module("Prime");
 
 test("Numbers", function() {
+  expect(4);
+  ok(math.isPrime(97), "Prime");
+  ok(!math.isPrime(100), "Not Prime");
+  ok(math.isComposite(16), "Composite");
+  ok(!math.isComposite(13), "Not Composite");
+});
 
+test("Arrays", function() {
+  expect(2);
+  deepEqual(math.isPrime([100, 200, 2]), [false, false, true], "Checking Primes");
+  deepEqual(math.isComposite([100, 200, 2]), [true, true, false], "Checking Composites");
+});
+
+module("Square");
+
+test("Numbers", () => {
+  expect(1);
+  ok(math.square(2), 4, "Easy Case");
+});
+
+test("Arrays", () => {
+  expect(1);
+  deepEqual(math.square([1, 2, 3, 4, 10]), [1, 4, 9, 16, 100], "Easy Case");
+});
+
+test("Objects", () => {
+  expect(1);
+  deepEqual(math.square([{'a':1}, {'a': 2}, {'a': 8}], 'a'), [1, 4, 64]);
 });
 
 module("Sum");
@@ -36,10 +82,9 @@ test("Arrays", function() {
 });
 
 test("Objects", function() {
-  expect(3);
+  expect(2);
   equal( math.sum([{value:1},{value:2},{value:3}]), 6, "Array of objects" );
   equal( math.sum([{a:1},{a:2, b:5},{a:3}], 'a'), 6, "Specify plucked key" );
-  equal( math.sum({one: {a:1},two:{a:2},three: {a:3}}, 'a'), 6, "Over values of an object with specified key" );
 });
 
 module("Mean");
@@ -51,36 +96,26 @@ test("Arrays", function() {
 });
 
 test("Objects", function() {
-  expect(2);
+  expect(1);
   equal( math.mean([{a:-Math.PI},{a:Math.PI}], 'a'), 0, "Array of objects, specified key" );
-  equal( math.mean({one: {a:-Math.PI}, two: {a:1}}, 'a'), (1-Math.PI)/2, "OVer values of an object with specified key" );
 });
 
 module("Scale");
 
 test("Arrays", function() {
   expect(3);
-  deepEqual( math.scale([1, 2, 5], 1), [0.2, 0.4, 1], "Scale to 1" );
-  deepEqual( math.scale([1, 2, 5], 5), [1, 2, 5], "Scale to 5" );
-  deepEqual( math.scale([1, 2, 5]), [0.2, 0.4, 1], "Implied 1" );
+  deepEqual( math.scale([1, 2, 5]), [0, 0.25, 1], "Scale to 1" );
+  deepEqual( math.scale([1, 2, 5], 1, 100), [1, 2, 5], "Scale to 100" );
+  deepEqual( math.scale([1, 2, 5], 100, 1), [0.2, 0.4, 1], "Implied 1" );
 });
 
 module("Numeric Sort");
 
 test("Arrays", function() {
-  expect(2);
+  expect(3);
   deepEqual( math.sort([0,4,7,-1]), [-1,0,4,7], "Digits, negative, zero" );
   deepEqual( math.sort([0,4,7,-1,12,21,122]), [-1,0,4,7,12,21,122], "Double digits" );
-});
-
-module("Slope");
-
-test("Two points", function() {
-  expect(4);
-  equal( math.slope([0,0], [5,5]), 1, "Slope of 1" );
-  equal( math.slope([0,0], [1,10]), 10, "Slope of 10" );
-  equal( math.slope([0,0], [0,10]), Infinity, "Infinite slope" );
-  equal( math.slope([0,0], [10,0]), 0, "Slope of 0" );
+  deepEqual( math.sort([0,4,7,-1,12,21,122], true), [122, 21, 12, 7, 4, 0, -1], "Descending" );
 });
 
 module("Median");
@@ -161,17 +196,22 @@ test("Arrays", function() {
 
 test("Moving Average", function() {
   expect(1);
-  deepEqual(math.movingAvg([1,2,3,4,5,6,7,8,9,10], 3), [2,3,4,5,6,7,8,9]);
+  deepEqual(
+    math.movingAvg([1,2,3,4,5,6,7,8,9,10], 3),
+    [2,3,4,5,6,7,8,9]
+  );
 });
 
 test("Moving Average", function() {
   expect(2);
 
   deepEqual(
-    math.movingAvg([1,2,3,4,5,6,7,8,9,10], 4), [2.5,3.5,4.5,5.5,6.5,7.5,8.5]
+    math.movingAvg([1,2,3,4,5,6,7,8,9,10], 4),
+    [2.5,3.5,4.5,5.5,6.5,7.5,8.5]
   );
 
   deepEqual(
-    math.movingAvg([1,2,3,4,5,6,7,8,9,10], 3), [2,3,4,5,6,7,8,9]
+    math.movingAvg([1,2,3,4,5,6,7,8,9,10], 3),
+    [2,3,4,5,6,7,8,9]
   );
 });
