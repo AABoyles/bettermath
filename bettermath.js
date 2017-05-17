@@ -19,22 +19,6 @@
   // It you're working in [node](http://nodejs.com), you can `require` it into
   // whatever you want.
 
-  // The only dependency is [lodash](https://lodash.com/), though development is
-  // trending towards removing this dependency. For now, though, it's necessary.
-  // If we're in the browser, make sure you've included lodash
-  if( typeof window !== 'undefined' && window._ ) {
-    var _ = window._;
-  }
-
-  // If we're not in the browser, let's `require` it.
-  if( typeof _ === 'undefined' ) {
-    if( typeof require !== 'undefined' ) {
-      var _ = require('lodash');
-    } else {
-      throw new Error('bettermath requires lodash');
-    }
-  }
-
   //## Mappers
   // Mapper functions accept a single argument (which may be an array of numbers
   // or objects), and return an object of roughly similar type and size.

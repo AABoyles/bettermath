@@ -14,9 +14,7 @@ It's intended to be browser- and node- compatible, so...
 
 ### Browser
 
-If you don't already have [underscore](http://underscorejs.org/) or [lodash](https://lodash.com/) included in your file, you'll need to include that first.
-
-Then, [Download bettermath](https://raw.githubusercontent.com/AABoyles/BetterMath/master/BetterMath.js) and include it in your html file:
+[Download bettermath](https://raw.githubusercontent.com/AABoyles/BetterMath/master/BetterMath.js) and include it in your html file:
 
 ```html
 <script src="bettermath.js"></script>

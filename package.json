@@ -20,9 +20,7 @@
     "url": "https://github.com/AABoyles/bettermath/issues"
   },
   "homepage": "https://github.com/AABoyles/bettermath#README.md",
-  "dependencies": {
-    "lodash": "^4.17.4"
-  },
+  "dependencies": {},
   "devDependencies": {
     "docco": "^0.7.0",
     "fixmyjs": "^1.0.3",
