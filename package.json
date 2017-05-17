@@ -1,14 +1,14 @@
 {
   "name": "bettermath",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "Basic Mathematical Operations for Arrays in Javascript",
   "main": "bettermath.js",
   "scripts": {
-    "test": "echo '=> testing' && qunit -c bettermath.js -t test/tests.js",
-    "fix": "echo '=> fixing'  && fixmyjs bettermath.js",
-    "lint": "echo '=> linting' && jshint *.js",
-    "docs": "echo '=> updating documentation' && docco -c custom.css bettermath.js",
-    "release": "echo '=> uglifing' && uglifyjs bettermath.js > bettermath.min.js"
+    "test": "qunit -c bettermath.js -t test/tests.js",
+    "fix":  "fixmyjs bettermath.js",
+    "lint": "jshint *.js",
+    "docs": "docco -c custom.css bettermath.js && mv docs/bettermath.html docs/index.html",
+    "release": "uglifyjs bettermath.js > bettermath.min.js"
   },
   "repository": {
     "type": "git",
@@ -19,7 +19,7 @@
   "bugs": {
     "url": "https://github.com/AABoyles/bettermath/issues"
   },
-  "homepage": "https://github.com/AABoyles/bettermath#README.md",
+  "homepage": "https://aaboyles.github.io/bettermath",
   "dependencies": {},
   "devDependencies": {
     "docco": "^0.7.0",
