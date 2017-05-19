@@ -1,14 +1,14 @@
 {
   "name": "bettermath",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Basic Mathematical Operations for Arrays in Javascript",
   "main": "bettermath.js",
   "scripts": {
     "test": "qunit -c bettermath.js -t test/tests.js",
     "fix":  "fixmyjs bettermath.js",
-    "lint": "jshint *.js",
+    "lint": "jshint bettermath.js",
     "docs": "docco -c custom.css bettermath.js && mv docs/bettermath.html docs/index.html",
-    "release": "uglifyjs bettermath.js > bettermath.min.js"
+    "release": "uglifyjs bettermath.js -c -m -o bettermath.min.js"
   },
   "repository": {
     "type": "git",
