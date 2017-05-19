@@ -63,7 +63,7 @@ math.median([1,2,3,4])
 
 This project is a direct result of the fact that I'm basically an R coder. In R the fundamental datastructure is a Vector. While there isn't a perfect analog in Javascript, arrays of numbers can serve for many similar purposes. But Javascript arrays don't have a ton of useful mathematical methods. For example, to multiply the elements of a vector by a scalar in R, you'd do something like this:
 
-```R
+```r
 myVector <- c(1,2,3,4,5)
 scalar <- 10
 myVector * scalar
@@ -84,7 +84,11 @@ While we don't really want to mess with the primitives in javascript to make it 
 
 ```javascript
 function scale(vector, scalar){
-  return vector.map(i => i * scalar);
+  output = [];
+  for(var i = 0; i < myArray.length; i++){
+    output.push(i * scalar);
+  }
+  return output;
 }
 ```
 
@@ -119,7 +123,11 @@ Additionally, I aspire to write a wider variety of functions which perform tasks
 
 If you'd like to contribute, please [fork this repo](https://github.com/AABoyles/bettermath), write an improvement, and submit a pull request.
 
-If you'd like to contribute a new method, please adhere to the following design pattern:
+If you'd like to contribute a new method, please adhere to the following design patterns.
+
+### Mappers
+
+These are the functions which are most urgently needed at this time. Pick a function in Math [that isn't in bettermath](https://aaboyles.github.io/bettermath/docs/todo.html) and implement it, like so:
 
 ```javascript
 //### myNewFunction
@@ -143,6 +151,27 @@ Some things to note:
 * Where possible, call `map()` and pass the function itself.
 * After the Array check, then put your function logic and return.
 * There is a [test file](https://github.com/AABoyles/bettermath/blob/master/test/tests.js). Writing additional tests for your function is also enthusiastically encouraged.
+
+### Reducers
+
+I plan to write a ton of reducers in the future, but the need for them is slightly less urgent. Because they're more unique than mappers, I don't have a specific design pattern in mind.
+
+Some opinions I'm going to enforce:
+
+* In general, if the reducer takes no arguments but an array of numbers, also include a key argument and call `math.pluck(obj, key)` first thing. That will allow the reducer to act on arrays of objects, as well as arrays of numbers.
+
+Some sources of reducers I'm planning to mine for implementations:
+
+* https://en.wikipedia.org/wiki/Central_tendency#Measures_of_central_tendency
+* https://en.wikipedia.org/wiki/Statistical_dispersion
+
+### Helpers
+
+One thing I want to avoid is writing any more helpers than necessary. If you write one, please have a compelling reason and include it in the commit message.
+
+### Functions that don't work on Numbers or Arrays of numbers
+
+I know, I've got a few. Those are going to go away with bettermath 1.0.0, so don't get used to them, and please don't write any new ones.
 
 ## LICENSE
 
