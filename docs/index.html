@@ -47,11 +47,13 @@ of useful numerical computations on arrays of numbers.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>It’s designed to work seamlessly as a mixin with the standard <code>Math</code>
-object, However, I know that messing with standard globals makes some
-people sick to their stomachs, so it doesn’t do it automatically.</p>
+              <p>It’s designed to work seamlessly as a mixin with the standard
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math"><code>Math</code></a>
+object. This should be very safe to do (but if you have any problems doing
+so, please let me know immediately.)</p>
 <p>If you’re using it in the browser, you can access it from the <code>math</code>
-global. (Note the lower-case ‘m’).</p>
+global (<a href="http://wiki.c2.com/?GlobalVariablesAreBad">sorry</a>). (Note the
+lower-case ‘m’).</p>
 
             </div>
             
@@ -101,7 +103,7 @@ whatever you want.</p>
             
             <div class="content"><div class='highlight'><pre>  math.isArray = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj</span>)</span>{
     <span class="hljs-keyword">if</span>(<span class="hljs-built_in">Array</span>.isArray) <span class="hljs-keyword">return</span> <span class="hljs-built_in">Array</span>.isArray(obj);
-    <span class="hljs-keyword">return</span> variable.constructor === <span class="hljs-built_in">Array</span>;
+    <span class="hljs-keyword">return</span> obj.constructor === <span class="hljs-built_in">Array</span>;
   };</pre></div></div>
             
         </li>
@@ -140,8 +142,8 @@ whatever you want.</p>
     <span class="hljs-keyword">var</span> arr = obj;
     <span class="hljs-keyword">if</span>(math.isArray(obj)){
       <span class="hljs-keyword">if</span>(math.isObject(obj[<span class="hljs-number">0</span>])){
-        <span class="hljs-keyword">var</span> key = key || <span class="hljs-string">'value'</span>;
-        <span class="hljs-keyword">var</span> arr = obj.map(<span class="hljs-function"><span class="hljs-params">i</span> =&gt;</span> i[key]);
+        key = key || <span class="hljs-string">'value'</span>;
+        arr = obj.map(<span class="hljs-function"><span class="hljs-params">i</span> =&gt;</span> i[key]);
       }
     }
     <span class="hljs-keyword">return</span> arr;
@@ -155,6 +157,40 @@ whatever you want.</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <h3 id="range">range</h3>
+<p>Given a number, s, range returns an array of integers between 1 and s
+(inclusive).</p>
+<p>Given two numbers s and t, range returns an array of integers between t and
+s (inclusive).</p>
+<p>Given three numders s, t, and i, range returns an array of integers between
+t and s + i - 1 (inclusive) such that the difference between each element
+in the output array is exactly i.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  math.range = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">stop, start, step</span>)</span>{
+    start = start || <span class="hljs-number">1</span>;
+    step = step || <span class="hljs-number">1</span>;
+
+    <span class="hljs-keyword">var</span> length = <span class="hljs-built_in">Math</span>.max(<span class="hljs-built_in">Math</span>.ceil((stop - start) / step), <span class="hljs-number">0</span>);
+    <span class="hljs-keyword">var</span> range = <span class="hljs-built_in">Array</span>(length);
+
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> idx = <span class="hljs-number">0</span>; idx &lt; length; idx++, start += step){
+      range[idx] = start;
+    }
+
+    <span class="hljs-keyword">return</span> range;
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
               <h2 id="mappers">Mappers</h2>
 <p>Mapper functions accept a single argument (which may be an array of numbers
@@ -171,11 +207,11 @@ to operate on.</p>
         </li>
         
         
-        <li id="section-9">
+        <li id="section-10">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-9">&#182;</a>
+                <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
               <h3 id="isundefined">isUndefined</h3>
 <p>Determines if a given object is undefined.</p>
@@ -192,11 +228,11 @@ to operate on.</p>
         </li>
         
         
-        <li id="section-10">
+        <li id="section-11">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-10">&#182;</a>
+                <a class="pilcrow" href="#section-11">&#182;</a>
               </div>
               <h3 id="isnumber">isNumber</h3>
 <p>Determines if a given object is a number</p>
@@ -213,18 +249,18 @@ to operate on.</p>
         </li>
         
         
-        <li id="section-11">
+        <li id="section-12">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-11">&#182;</a>
+                <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
               <h3 id="isnan">isNaN</h3>
 <p>Determines if a given object is <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN">Not a Number</a></p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  math.isNaN = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj</span>)</span>{
+            <div class="content"><div class='highlight'><pre>  math.isNaN = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
     <span class="hljs-keyword">if</span>(math.isArray(obj)){
       <span class="hljs-keyword">return</span> math.pluck(obj, key).map(math.isNaN);
     }
@@ -234,11 +270,11 @@ to operate on.</p>
         </li>
         
         
-        <li id="section-12">
+        <li id="section-13">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-12">&#182;</a>
+                <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
               <h3 id="isinteger">isInteger</h3>
 <p>Determines if a given object is an integer</p>
@@ -255,11 +291,11 @@ to operate on.</p>
         </li>
         
         
-        <li id="section-13">
+        <li id="section-14">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-13">&#182;</a>
+                <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
               <h3 id="ispositive">isPositive</h3>
 <p>Determines whether a number is positive</p>
@@ -276,11 +312,11 @@ to operate on.</p>
         </li>
         
         
-        <li id="section-14">
+        <li id="section-15">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-14">&#182;</a>
+                <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
               <h3 id="isnegative">isNegative</h3>
 <p>Determines whether a number is negative</p>
@@ -292,16 +328,44 @@ to operate on.</p>
       <span class="hljs-keyword">return</span> math.pluck(obj, key).map(math.isNegative);
     }
     <span class="hljs-keyword">return</span> obj &lt; <span class="hljs-number">0</span>;
-  };
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <h3 id="isnonnegative">isNonnegative</h3>
+<p>Determines whether a number is nonnegative</p>
 
-  math.isNonnegative = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  math.isNonnegative = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
     <span class="hljs-keyword">if</span>(math.isArray(obj)){
       <span class="hljs-keyword">return</span> math.pluck(obj, key).map(math.isNonnegative);
     }
     <span class="hljs-keyword">return</span> obj &gt;= <span class="hljs-number">0</span>;
-  };
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <h3 id="isnonpositive">isNonpositive</h3>
+<p>Determines whether a number is nonpositive</p>
 
-  math.isNonpositive = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  math.isNonpositive = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
     <span class="hljs-keyword">if</span>(math.isArray(obj)){
       <span class="hljs-keyword">return</span> math.pluck(obj, key).map(math.isNonpositive);
     }
@@ -311,11 +375,11 @@ to operate on.</p>
         </li>
         
         
-        <li id="section-15">
+        <li id="section-18">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-15">&#182;</a>
+                <a class="pilcrow" href="#section-18">&#182;</a>
               </div>
               <h3 id="iszero">isZero</h3>
 <p>Determines whether a number is Zero</p>
@@ -332,11 +396,32 @@ to operate on.</p>
         </li>
         
         
-        <li id="section-16">
+        <li id="section-19">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-16">&#182;</a>
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <h3 id="isnonzero">isNonzero</h3>
+<p>Determines whether a number is nonzero</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  math.isNonzero = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
+    <span class="hljs-keyword">if</span>(math.isArray(obj)){
+      <span class="hljs-keyword">return</span> math.pluck(obj, key).map(math.isNonzero);
+    }
+    <span class="hljs-keyword">return</span> obj !== <span class="hljs-number">0</span>;
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
               </div>
               <h3 id="isfinite">isFinite</h3>
 <p>Determines whether a number is finite</p>
@@ -353,11 +438,11 @@ to operate on.</p>
         </li>
         
         
-        <li id="section-17">
+        <li id="section-21">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-17">&#182;</a>
+                <a class="pilcrow" href="#section-21">&#182;</a>
               </div>
               <h3 id="isinfinite">isInfinite</h3>
 <p>Determines whether a number is positive</p>
@@ -374,11 +459,11 @@ to operate on.</p>
         </li>
         
         
-        <li id="section-18">
+        <li id="section-22">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-18">&#182;</a>
+                <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
               <h3 id="iseven">isEven</h3>
 <p>Determines whether a number is even.</p>
@@ -395,11 +480,11 @@ to operate on.</p>
         </li>
         
         
-        <li id="section-19">
+        <li id="section-23">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-19">&#182;</a>
+                <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
               <h3 id="isodd">isOdd</h3>
 <p>Returns a boolean indicating whether a number n is odd.</p>
@@ -416,11 +501,11 @@ to operate on.</p>
         </li>
         
         
-        <li id="section-20">
+        <li id="section-24">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-20">&#182;</a>
+                <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
               <h3 id="isprime">isPrime</h3>
 <p>Returns a boolean variable indicating whether a number n is prime.</p>
@@ -432,40 +517,34 @@ simple.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>  math.isPrime = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
-    <span class="hljs-keyword">if</span>(math.isNumber(obj)){
-      <span class="hljs-keyword">if</span>(math.isArray(obj)){
-        <span class="hljs-keyword">return</span> math.pluck(obj, key).map(math.isPrime);
-      }
-      <span class="hljs-keyword">var</span> safeN = <span class="hljs-built_in">Math</span>.abs(<span class="hljs-built_in">Math</span>.round(obj));
-      <span class="hljs-keyword">if</span> (!obj){
-        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
-      } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (obj !== <span class="hljs-number">2</span>){
-        <span class="hljs-keyword">var</span> goUntil = <span class="hljs-built_in">Math</span>.ceil(<span class="hljs-built_in">Math</span>.sqrt(safeN));
-        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">2</span>; i &lt;= goUntil; i++){
-          <span class="hljs-keyword">if</span> (safeN % i === <span class="hljs-number">0</span>){
-            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
-          }
+    <span class="hljs-keyword">if</span>(math.isArray(obj)){
+      <span class="hljs-keyword">return</span> math.pluck(obj, key).map(math.isPrime);
+    }
+    <span class="hljs-keyword">if</span> (!obj){
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (obj !== <span class="hljs-number">2</span>){
+      <span class="hljs-keyword">var</span> safeN = math.abs(<span class="hljs-built_in">Math</span>.round(obj));
+      <span class="hljs-keyword">var</span> goUntil = <span class="hljs-built_in">Math</span>.ceil(math.sqrt(safeN));
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">2</span>; i &lt;= goUntil; i++){
+        <span class="hljs-keyword">if</span> (safeN % i === <span class="hljs-number">0</span>){
+          <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
         }
       }
-      <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
     }
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
   };</pre></div></div>
             
         </li>
         
         
-        <li id="section-21">
+        <li id="section-25">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-21">&#182;</a>
+                <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
               <h3 id="iscomposite">isComposite</h3>
 <p>Returns a boolean variable indicating whether a number n is composite.</p>
-<p><em>Note</em> that for a numeric input, n, this is O(sqrt(n)).
-For arrays of size m, it’s O(m*sqrt(n)).
-It isn’t the most efficient possible implementation, but it’s reasonably
-simple.</p>
 
             </div>
             
@@ -479,11 +558,11 @@ simple.</p>
         </li>
         
         
-        <li id="section-22">
+        <li id="section-26">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-22">&#182;</a>
+                <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
               <h3 id="sign">sign</h3>
 <p>Returns one of [-1,0,1], indicating whether the given obj is negative,
@@ -502,11 +581,11 @@ zero, or positive</p>
         </li>
         
         
-        <li id="section-23">
+        <li id="section-27">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-23">&#182;</a>
+                <a class="pilcrow" href="#section-27">&#182;</a>
               </div>
               <h3 id="abs">abs</h3>
 <p>Returns the absolute value of a number.</p>
@@ -515,98 +594,10 @@ zero, or positive</p>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">var</span> origAbs = <span class="hljs-built_in">Math</span>.abs;
   math.abs = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
-    <span class="hljs-keyword">if</span>(math.isNumber(obj)){
-      <span class="hljs-keyword">return</span> origAbs(obj);
-    }
     <span class="hljs-keyword">if</span>(math.isArray(obj)){
       <span class="hljs-keyword">return</span> math.pluck(obj, key).map(math.abs);
     }
-  };</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-24">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-24">&#182;</a>
-              </div>
-              <h3 id="square">square</h3>
-<p>Multiplies a number by itself.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  math.square = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
-    <span class="hljs-keyword">return</span> math.pow(math.pluck(obj, key), <span class="hljs-number">2</span>);
-  };</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-25">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-25">&#182;</a>
-              </div>
-              <h3 id="cube">cube</h3>
-<p>Multiplies a number by its square.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  math.cube = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
-    <span class="hljs-keyword">return</span> math.pow(math.pluck(obj, key), <span class="hljs-number">3</span>);
-  };</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-26">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-26">&#182;</a>
-              </div>
-              <h3 id="pow">pow</h3>
-<p>Given a number and an exponent, returns the number raised to the exponent.</p>
-<p>Given an array of numbers, along with an exponent, returns an array for
-which each entry is the corresponding value of the original array raised
-to that exponent.</p>
-<p><strong>WARNING! Overwrites <code>Math.pow</code> when mixed with Math</strong></p>
-<p>This should be safe to do, but if you encounter any issues doing so,
-please <a href="https://github.com/AABoyles/bettermath/issues">let me know.</a></p>
-<p><code>math.pow(2,3)</code> &rArr; 8</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">var</span> origPow = <span class="hljs-built_in">Math</span>.pow; <span class="hljs-comment">//Just in case we want to extend Math</span>
-  math.pow = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, n</span>)</span>{
-    <span class="hljs-keyword">if</span>(math.isArray(obj)){
-      <span class="hljs-keyword">return</span> obj.map(<span class="hljs-function"><span class="hljs-params">i</span> =&gt;</span> math.pow(i, n));
-    }
-    <span class="hljs-keyword">return</span> origPow(obj, n);
-  };</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-27">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-27">&#182;</a>
-              </div>
-              <h3 id="sqrt">sqrt</h3>
-<p>Given a number, computes the Square Root</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  math.sqrt = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
-    <span class="hljs-keyword">if</span>(math.isArray(obj)){
-      <span class="hljs-keyword">return</span> math.pluck(obj, key).map(math.sqrt);
-    }
-    <span class="hljs-keyword">return</span> <span class="hljs-built_in">Math</span>.sqrt(obj);
+    <span class="hljs-keyword">return</span> origAbs(obj);
   };</pre></div></div>
             
         </li>
@@ -618,16 +609,15 @@ please <a href="https://github.com/AABoyles/bettermath/issues">let me know.</a><
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-28">&#182;</a>
               </div>
-              <h3 id="cbrt">cbrt</h3>
-<p>Given a number, computes the Cube Root</p>
+              <h3 id="square">square</h3>
+<p>Multiplies a number by itself.</p>
+<p>Note that this function will accept arrays of objects, where math.pow will
+not.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  math.cbrt = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
-    <span class="hljs-keyword">if</span>(math.isArray(obj)){
-      <span class="hljs-keyword">return</span> math.pluck(obj, key).map(math.cbrt);
-    }
-    <span class="hljs-keyword">return</span> <span class="hljs-built_in">Math</span>.cbrt(obj);
+            <div class="content"><div class='highlight'><pre>  math.square = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
+    <span class="hljs-keyword">return</span> math.pow(math.pluck(obj, key), <span class="hljs-number">2</span>);
   };</pre></div></div>
             
         </li>
@@ -638,6 +628,104 @@ please <a href="https://github.com/AABoyles/bettermath/issues">let me know.</a><
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <h3 id="cube">cube</h3>
+<p>Multiplies a number by its square.</p>
+<p>Note that this function will accept arrays of objects, where math.pow will
+not.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  math.cube = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
+    <span class="hljs-keyword">return</span> math.pow(math.pluck(obj, key), <span class="hljs-number">3</span>);
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              <h3 id="pow">pow</h3>
+<p>Given a number and an exponent, returns the number raised to the exponent.</p>
+<p>Given an array of numbers, along with an exponent, returns an array for
+which each entry is the corresponding value of the original array raised
+to that exponent.</p>
+<p>Given an array of object, should fail. If you need to raise an array of
+objects to an exponent, please use <code>math.square</code>, <code>math.cube</code>, <code>math.sqrt</code>,
+and <code>math.cbrt</code> for n = 2, 3, 1/2, and 1/3 respectively. For arbitrary
+values of n, please call <code>math.pluck</code> your array first, and pass the
+plucked array to <code>math.pow</code>.</p>
+<p><code>math.pow(2,3)</code> &rArr; 8</p>
+<p><code>math.pow([1, 2, 10], 3)</code> &rArr; [1, 8, 1000]</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">var</span> origPow = <span class="hljs-built_in">Math</span>.pow;
+  math.pow = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, n</span>)</span>{
+    <span class="hljs-keyword">if</span>(math.isArray(obj)){
+      <span class="hljs-keyword">return</span> obj.map(<span class="hljs-function"><span class="hljs-params">i</span> =&gt;</span> math.pow(i, n));
+    }
+    <span class="hljs-keyword">return</span> origPow(obj, n);
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              <h3 id="sqrt">sqrt</h3>
+<p>Given a number, computes the Square Root</p>
+<p>Note that this function will accept arrays of objects, where math.pow will
+not.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  math.sqrt = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
+    <span class="hljs-keyword">if</span>(math.isArray(obj)){
+      <span class="hljs-keyword">return</span> math.pluck(obj, key).map(math.sqrt);
+    }
+    <span class="hljs-keyword">return</span> math.pow(obj, <span class="hljs-number">1</span>/<span class="hljs-number">2</span>);
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-32">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-32">&#182;</a>
+              </div>
+              <h3 id="cbrt">cbrt</h3>
+<p>Given a number, computes the Cube Root</p>
+<p>Note that this function will accept arrays of objects, where math.pow will
+not.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  math.cbrt = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
+    <span class="hljs-keyword">if</span>(math.isArray(obj)){
+      <span class="hljs-keyword">return</span> math.pluck(obj, key).map(math.cbrt);
+    }
+    <span class="hljs-keyword">return</span> math.pow(obj, <span class="hljs-number">1</span>/<span class="hljs-number">3</span>);
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-33">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-33">&#182;</a>
               </div>
               <h3 id="factorial">factorial</h3>
 <p>Given a number, computes the factorial.</p>
@@ -661,11 +749,11 @@ please <a href="https://github.com/AABoyles/bettermath/issues">let me know.</a><
         </li>
         
         
-        <li id="section-30">
+        <li id="section-34">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-30">&#182;</a>
+                <a class="pilcrow" href="#section-34">&#182;</a>
               </div>
               <h3 id="scale">scale</h3>
 <p>Transforms an array to fit within the range [min, max], such that the
@@ -686,11 +774,11 @@ ratios between any two elements are maintained.</p>
         </li>
         
         
-        <li id="section-31">
+        <li id="section-35">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-31">&#182;</a>
+                <a class="pilcrow" href="#section-35">&#182;</a>
               </div>
               <h3 id="samesign">sameSign</h3>
 <p>Compares the signs of two values</p>
@@ -707,11 +795,11 @@ ratios between any two elements are maintained.</p>
         </li>
         
         
-        <li id="section-32">
+        <li id="section-36">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-32">&#182;</a>
+                <a class="pilcrow" href="#section-36">&#182;</a>
               </div>
               <h3 id="copysign">copySign</h3>
 <p>Copies the sign of y onto x</p>
@@ -728,15 +816,15 @@ ratios between any two elements are maintained.</p>
         </li>
         
         
-        <li id="section-33">
+        <li id="section-37">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-33">&#182;</a>
+                <a class="pilcrow" href="#section-37">&#182;</a>
               </div>
-              <h3 id="undirected-edges">undirected Edges</h3>
-<p>Given an undirected graph of n nodes, what is the upper bound on the number
-of distinct edges?</p>
+              <h3 id="undirectededges">undirectedEdges</h3>
+<p>Computes the maximum number of distinct edges of an undirected graph of <code>n</code>
+nodes.</p>
 
             </div>
             
@@ -744,17 +832,17 @@ of distinct edges?</p>
     <span class="hljs-keyword">if</span>(math.isArray(obj)){
       <span class="hljs-keyword">return</span> math.pluck(obj, key).map(math.undirectedEdges);
     }
-    <span class="hljs-keyword">return</span> n * (n - <span class="hljs-number">1</span>) / <span class="hljs-number">2</span>;
+    <span class="hljs-keyword">return</span> obj * (obj - <span class="hljs-number">1</span>) / <span class="hljs-number">2</span>;
   };</pre></div></div>
             
         </li>
         
         
-        <li id="section-34">
+        <li id="section-38">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-34">&#182;</a>
+                <a class="pilcrow" href="#section-38">&#182;</a>
               </div>
               <h3 id="factors">factors</h3>
 <p>Returns an array of the factors of a number, n</p>
@@ -766,7 +854,7 @@ of distinct edges?</p>
       obj.map(math.factors);
     }
     <span class="hljs-keyword">var</span> result = [],
-        startN = <span class="hljs-built_in">Math</span>.abs(<span class="hljs-built_in">Math</span>.round(obj)),
+        startN = math.abs(<span class="hljs-built_in">Math</span>.round(obj)),
         finished = <span class="hljs-literal">false</span>;
     <span class="hljs-keyword">while</span>(!finished){
       finished = <span class="hljs-literal">true</span>;
@@ -788,11 +876,11 @@ of distinct edges?</p>
         </li>
         
         
-        <li id="section-35">
+        <li id="section-39">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-35">&#182;</a>
+                <a class="pilcrow" href="#section-39">&#182;</a>
               </div>
               <h3 id="divisors">divisors</h3>
 <p>Returns an array of the divisors of a number n</p>
@@ -803,7 +891,7 @@ of distinct edges?</p>
     <span class="hljs-keyword">if</span>(math.isArray(obj)){
       <span class="hljs-keyword">return</span> obj.map(math.divisors);
     }
-    <span class="hljs-keyword">var</span> safeN = <span class="hljs-built_in">Math</span>.abs(<span class="hljs-built_in">Math</span>.round(obj));
+    <span class="hljs-keyword">var</span> safeN = math.abs(<span class="hljs-built_in">Math</span>.round(obj));
     <span class="hljs-keyword">var</span> result = [<span class="hljs-number">1</span>];
     <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i = <span class="hljs-number">2</span>; i &lt;= safeN / <span class="hljs-number">2</span>; i++){
       <span class="hljs-keyword">if</span>(safeN % i === <span class="hljs-number">0</span>){
@@ -816,11 +904,11 @@ of distinct edges?</p>
         </li>
         
         
-        <li id="section-36">
+        <li id="section-40">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-36">&#182;</a>
+                <a class="pilcrow" href="#section-40">&#182;</a>
               </div>
               <h3 id="between">between</h3>
 <p>Returns a boolean indicating whether a number x is between two others
@@ -838,18 +926,14 @@ numbers, a and b.</p>
         </li>
         
         
-        <li id="section-37">
+        <li id="section-41">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-37">&#182;</a>
+                <a class="pilcrow" href="#section-41">&#182;</a>
               </div>
               <h3 id="format">format</h3>
 <p>Truncates a number n at the given precision</p>
-<p><em>Note</em> that the necessity of the precision argument prevents passing a key,
-meaning that in order to use this on an array of objects, you must pluck it
-before you pass it. For example:</p>
-<p><code>math.format([{a:1.234}, {a:2.345}], 2)</code> &rArr; Error</p>
 <p><code>var t = math.pluck([{a:1.234}, {a:2.345}], &#39;a&#39;); math.format(t, 2);</code> &rArr;</p>
 
             </div>
@@ -864,11 +948,11 @@ before you pass it. For example:</p>
         </li>
         
         
-        <li id="section-38">
+        <li id="section-42">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-38">&#182;</a>
+                <a class="pilcrow" href="#section-42">&#182;</a>
               </div>
               <h3 id="sort">Sort</h3>
 <p>Sorts an array of numbers.</p>
@@ -887,11 +971,327 @@ before you pass it. For example:</p>
         </li>
         
         
-        <li id="section-39">
+        <li id="section-43">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-39">&#182;</a>
+                <a class="pilcrow" href="#section-43">&#182;</a>
+              </div>
+              <h2 id="reducers">Reducers</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-44">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-44">&#182;</a>
+              </div>
+              <h3 id="sum">sum</h3>
+<p>Computes the sum of an array of numbers (or an array of objects with a
+given <code>key</code>).</p>
+<p><code>math.sum([1,2,3]);</code> &rArr; 6</p>
+<p><code>math.sum([{b: 4},{b: 5},{b: 6}], &#39;b&#39;)</code> &rArr; 15</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  math.sum = math.add = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
+    <span class="hljs-keyword">return</span> math.pluck(obj, key).reduce(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> a + b, <span class="hljs-number">0</span>);
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-45">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-45">&#182;</a>
+              </div>
+              <h3 id="product">product</h3>
+<p>Computes the product of an array of numbers (or an array of objects with a
+a given <code>key</code>).</p>
+<p><code>math.product([1,2,3])</code> &rArr; 6</p>
+<p><code>math.product([{b: 4},{b: 5},{b: 6}], &#39;b&#39;)</code> &rArr; 120</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  math.product = math.multiply = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
+    <span class="hljs-keyword">return</span> math.pluck(obj, key).reduce(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> a * b, <span class="hljs-number">1</span>);
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-46">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-46">&#182;</a>
+              </div>
+              <h3 id="gcd">gcd</h3>
+<p>Determines the greatest common divisor between two numbers.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  math.gcd = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, b</span>)</span>{
+    <span class="hljs-keyword">if</span>(math.isArray(obj)){
+      <span class="hljs-keyword">return</span> obj.map(<span class="hljs-function"><span class="hljs-params">i</span> =&gt;</span> math.gcd(i, b));
+    }
+    <span class="hljs-keyword">var</span> ref;
+    <span class="hljs-keyword">while</span>(b){
+      ref = [b, obj % b];
+      obj = ref[<span class="hljs-number">0</span>];
+      b = ref[<span class="hljs-number">1</span>];
+    }
+    <span class="hljs-keyword">return</span> obj;
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-47">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-47">&#182;</a>
+              </div>
+              <h3 id="lcm">lcm</h3>
+<p>Determines the least common multiple of two numbers.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  math.lcm = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, b</span>)</span>{
+    <span class="hljs-keyword">if</span>(math.isArray(obj)){
+      <span class="hljs-keyword">return</span> obj.map(<span class="hljs-function"><span class="hljs-params">i</span> =&gt;</span> math.lcm(i, b));
+    }
+    <span class="hljs-keyword">return</span> obj / math.gcd(obj, b) * b;
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-48">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-48">&#182;</a>
+              </div>
+              <h3 id="mean">mean</h3>
+<p>Given an array of numbers, returns
+the <a href="https://en.wikipedia.org/wiki/Arithmetic_mean">arithmetic mean</a>.</p>
+<p><code>math.mean([1,2,3])</code> &rArr; 2</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  math.mean = math.average = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
+    <span class="hljs-keyword">var</span> arr = math.pluck(obj, key);
+    <span class="hljs-keyword">return</span> math.sum(arr) / arr.length;
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-49">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-49">&#182;</a>
+              </div>
+              <h3 id="median">median</h3>
+<p>Given an array of numbers, returns
+the <a href="https://en.wikipedia.org/wiki/Median">median</a>.</p>
+<p><code>math.median([1,2,3,4])</code> &rArr; 2.5</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  math.median = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
+    <span class="hljs-keyword">var</span> arr = math.pluck(obj, key);
+    <span class="hljs-keyword">var</span> middle = (arr.length + <span class="hljs-number">1</span>) /<span class="hljs-number">2</span>;
+    <span class="hljs-keyword">var</span> sorted = math.sort(arr.slice());
+    <span class="hljs-keyword">return</span> (sorted.length % <span class="hljs-number">2</span>) ? sorted[middle - <span class="hljs-number">1</span>] : (sorted[middle - <span class="hljs-number">1.5</span>] + sorted[middle - <span class="hljs-number">0.5</span>]) / <span class="hljs-number">2</span>;
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-50">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-50">&#182;</a>
+              </div>
+              <h3 id="modes">modes</h3>
+<p>Returns an array of the most frequently recurring value in the input array.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  math.mode = math.modes = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
+    <span class="hljs-keyword">var</span> arr = math.pluck(obj, key);
+
+    <span class="hljs-keyword">if</span> (!arr.length) <span class="hljs-keyword">return</span> [];
+
+    <span class="hljs-keyword">var</span> modeMap = {},
+        maxCount = <span class="hljs-number">0</span>,
+        modes = [];
+
+    arr.forEach(<span class="hljs-function"><span class="hljs-params">val</span> =&gt;</span> {
+      <span class="hljs-keyword">if</span> (!modeMap[val]){
+        modeMap[val] = <span class="hljs-number">1</span>;
+      } <span class="hljs-keyword">else</span> {
+        modeMap[val]++;
+      }
+      <span class="hljs-keyword">if</span> (modeMap[val] &gt; maxCount){
+        modes = [val];
+        maxCount = modeMap[val];
+      } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (modeMap[val] === maxCount){
+        modes.push(val);
+      }
+    });
+    <span class="hljs-keyword">return</span> modes;
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-51">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-51">&#182;</a>
+              </div>
+              <h3 id="geometricmean">geometricMean</h3>
+<p>Given an array of numbers, returns
+the <a href="https://en.wikipedia.org/wiki/Geometric_mean">geometric mean</a>.</p>
+<p><code>math.geometricMean([3,9,27])</code> &rArr; 9</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  math.geometricMean = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
+    <span class="hljs-keyword">var</span> arr = math.pluck(obj, key);
+    <span class="hljs-keyword">return</span> math.pow(math.product(arr),<span class="hljs-number">1</span>/arr.length);
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-52">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-52">&#182;</a>
+              </div>
+              <h3 id="variance">Variance</h3>
+<p>Computes the variance of an array of numbers.</p>
+<p><code>math.variance([1,2,3])</code> &rArr; 2/3</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  math.variance = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
+    <span class="hljs-keyword">var</span> arr = math.pluck(obj, key);
+    <span class="hljs-keyword">var</span> mean = math.mean(arr);
+    <span class="hljs-keyword">return</span> math.mean(arr.map(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> math.pow(x - mean, <span class="hljs-number">2</span>)));
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-53">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-53">&#182;</a>
+              </div>
+              <h3 id="stddeviation">stdDeviation</h3>
+<p>Computes the Standard Deviation of an array of numbers.</p>
+<p><code>math.stdDeviation([1,2,3])</code> &rArr; 0.816496580927726</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  math.stdDeviation = math.sigma = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
+    <span class="hljs-keyword">return</span> math.sqrt(math.variance(math.pluck(obj, key)));
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-54">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-54">&#182;</a>
+              </div>
+              <h3 id="meanabsolutedeviation">meanAbsoluteDeviation</h3>
+<p>Computes the mean absolute deviation of an array of numbers.</p>
+<p><code>math.meanAbsoluteDeviation([1,2,3])</code> &rArr; 1</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  math.meanAbsoluteDeviation = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
+    <span class="hljs-keyword">var</span> arr  = math.pluck(obj, key),
+        mean = math.mean(arr);
+    <span class="hljs-keyword">return</span> math.mean(arr.map(<span class="hljs-function"><span class="hljs-params">n</span> =&gt;</span> math.abs(n - mean)));
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-55">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-55">&#182;</a>
+              </div>
+              <h3 id="zscore">zscore</h3>
+<p>Computes the standard Z-score, <em>assuming a normal distribution</em></p>
+<p><code>math.zscore([1,2,3])</code> &rArr; [-1.224744871391589, 0, 1.224744871391589]</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  math.zscore = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
+    <span class="hljs-keyword">var</span> arr = math.pluck(obj, key),
+        mean = math.mean(arr),
+        sigma = math.stdDeviation(arr);
+    <span class="hljs-keyword">return</span> arr.map(<span class="hljs-function"><span class="hljs-params">d</span> =&gt;</span> (d-mean)/sigma);
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-56">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-56">&#182;</a>
+              </div>
+              <h3 id="wilson">wilson</h3>
+<p>Given an array of boolean values and a Z-score, returns the
+<a href="http://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval#Wilson_score_interval">Wilson Score Interval</a></p>
+<p>Z-score is defaulted to cover the 95% interval.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  math.wilson = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, z</span>)</span>{
+    <span class="hljs-keyword">var</span> up    = obj.reduce(<span class="hljs-function">(<span class="hljs-params">x, i</span>) =&gt;</span> i ? x + <span class="hljs-number">1</span> : x, <span class="hljs-number">0</span>),
+        total = obj.length;
+    <span class="hljs-keyword">if</span>(total &lt;= <span class="hljs-number">0</span> || total &lt; up) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">var</span> avg = up/total,
+        z   = z || <span class="hljs-number">1.644853</span>,
+        z2  = math.square(z);
+    <span class="hljs-keyword">return</span> (avg + z2/(<span class="hljs-number">2</span>*total) - z*math.sqrt((avg*(<span class="hljs-number">1</span> - avg) + z2/(<span class="hljs-number">4</span>*total))/total))/(<span class="hljs-number">1</span> + z2/total);
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-57">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-57">&#182;</a>
               </div>
               <h3 id="movingavg">movingAvg</h3>
 <p>Computes a moving average of an array of numbers.</p>
@@ -915,252 +1315,11 @@ than the original array contained.</p>
         </li>
         
         
-        <li id="section-40">
+        <li id="section-58">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-40">&#182;</a>
-              </div>
-              <h2 id="reducers">Reducers</h2>
-
-            </div>
-            
-        </li>
-        
-        
-        <li id="section-41">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-41">&#182;</a>
-              </div>
-              <h3 id="sum">sum</h3>
-<p>Computes the sum of an array of numbers (or an array of objects with a
-given <code>key</code>).</p>
-<p><code>math.sum([1,2,3]);</code> &rArr; 6</p>
-<p><code>math.sum([{b: 4},{b: 5},{b: 6}], &#39;b&#39;)</code> &rArr; 15</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  math.sum = math.add = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
-    <span class="hljs-keyword">return</span> math.pluck(obj, key).reduce(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> a + b, <span class="hljs-number">0</span>);
-  };</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-42">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-42">&#182;</a>
-              </div>
-              <h3 id="product">product</h3>
-<p>Computes the product of an array of numbers (or an array of objects with a
-a given <code>key</code>).</p>
-<p><code>math.product([1,2,3])</code> &rArr; 6</p>
-<p><code>math.product([{b: 4},{b: 5},{b: 6}], &#39;b&#39;)</code> &rArr; 120</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  math.product = math.multiply = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
-    <span class="hljs-keyword">return</span> math.pluck(obj, key).reduce(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> a * b, <span class="hljs-number">1</span>);
-  };</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-43">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-43">&#182;</a>
-              </div>
-              <h3 id="mean">mean</h3>
-<p>Given an array of numbers, returns
-the <a href="https://en.wikipedia.org/wiki/Arithmetic_mean">arithmetic mean</a>.</p>
-<p><code>math.mean([1,2,3])</code> &rArr; 2</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  math.mean = math.average = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
-    <span class="hljs-keyword">var</span> arr = math.pluck(obj, key);
-    <span class="hljs-keyword">return</span> math.sum(arr) / arr.length;
-  };</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-44">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-44">&#182;</a>
-              </div>
-              <h3 id="median">median</h3>
-<p>Given an array of numbers, returns
-the <a href="https://en.wikipedia.org/wiki/Median">median</a>.</p>
-<p><code>math.median([1,2,3,4])</code> &rArr; 2.5</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  math.median = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
-    <span class="hljs-keyword">var</span> arr = math.pluck(obj, key);
-    <span class="hljs-keyword">var</span> middle = (arr.length + <span class="hljs-number">1</span>) /<span class="hljs-number">2</span>;
-    <span class="hljs-keyword">var</span> sorted = math.sort(arr.slice());
-    <span class="hljs-keyword">return</span> (sorted.length % <span class="hljs-number">2</span>) ? sorted[middle - <span class="hljs-number">1</span>] : (sorted[middle - <span class="hljs-number">1.5</span>] + sorted[middle - <span class="hljs-number">0.5</span>]) / <span class="hljs-number">2</span>;
-  };</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-45">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-45">&#182;</a>
-              </div>
-              <h3 id="modes">modes</h3>
-<p>Returns an array of the most frequently recurring value in the input array.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  math.mode = math.modes = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
-    <span class="hljs-keyword">var</span> arr = math.pluck(obj, key);
-
-		<span class="hljs-keyword">if</span> (!arr.length) <span class="hljs-keyword">return</span> [];
-
-		<span class="hljs-keyword">var</span> modeMap = {},
-		    maxCount = <span class="hljs-number">0</span>,
-		    modes = [];
-
-		arr.forEach(<span class="hljs-function"><span class="hljs-params">val</span> =&gt;</span> {
-			<span class="hljs-keyword">if</span> (!modeMap[val]){
-        modeMap[val] = <span class="hljs-number">1</span>;
-      } <span class="hljs-keyword">else</span> {
-        modeMap[val]++;
-      }
-			<span class="hljs-keyword">if</span> (modeMap[val] &gt; maxCount){
-				modes = [val];
-				maxCount = modeMap[val];
-			} <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (modeMap[val] === maxCount){
-				modes.push(val);
-			}
-		});
-		<span class="hljs-keyword">return</span> modes;
-	};</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-46">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-46">&#182;</a>
-              </div>
-              <h3 id="geometricmean">geometricMean</h3>
-<p>Given an array of numbers, returns
-the <a href="https://en.wikipedia.org/wiki/Geometric_mean">geomatric mean</a>.</p>
-<p><code>math.geometricMean([3,9,27])</code> &rArr; 9</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  math.geometricMean = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
-    <span class="hljs-keyword">var</span> arr = math.pluck(obj, key);
-    <span class="hljs-keyword">return</span> <span class="hljs-built_in">Math</span>.pow(math.product(arr),<span class="hljs-number">1</span>/arr.length);
-  };</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-47">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-47">&#182;</a>
-              </div>
-              <h3 id="variance">Variance</h3>
-<p>Computes the variance of an array of numbers.</p>
-<p><code>math.variance([1,2,3])</code> &rArr; 2/3</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  math.variance = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">arr</span>)</span>{
-    <span class="hljs-keyword">var</span> mean = math.mean(arr);
-    <span class="hljs-keyword">return</span> math.mean(arr.map(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> math.pow(x - mean, <span class="hljs-number">2</span>)));
-  };</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-48">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-48">&#182;</a>
-              </div>
-              <h3 id="stddeviation">stdDeviation</h3>
-<p>Computes the Standard Deviation of an array of numbers.</p>
-<p><code>math.stdDeviation([1,2,3])</code> &rArr; 0.816496580927726</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  math.stdDeviation = math.sigma = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
-    <span class="hljs-keyword">return</span> <span class="hljs-built_in">Math</span>.sqrt(math.variance(math.pluck(obj, key)));
-  };</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-49">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-49">&#182;</a>
-              </div>
-              <h3 id="meanabsolutedeviation">meanAbsoluteDeviation</h3>
-<p>Computes the mean absolute deviation of an array of numbers.</p>
-<p><code>math.meanAbsoluteDeviation([1,2,3])</code> &rArr; 1</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  math.meanAbsoluteDeviation = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
-    <span class="hljs-keyword">var</span> arr = math.pluck(obj, key),
-        mean = math.mean(arr);
-		<span class="hljs-keyword">return</span> math.mean(arr.map(<span class="hljs-function"><span class="hljs-params">n</span> =&gt;</span> <span class="hljs-built_in">Math</span>.abs(n - mean)));
-	};</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-50">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-50">&#182;</a>
-              </div>
-              <h3 id="zscore">zscore</h3>
-<p>Computes the standard Z-score, <em>assuming a normal distribution</em></p>
-<p><code>math.zscore([1,2,3])</code> &rArr; [-1.224744871391589, 0, 1.224744871391589]</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  math.zscore = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
-    <span class="hljs-keyword">var</span> arr = math.pluck(obj, key),
-        mean = math.mean(arr),
-        sigma = math.stdDeviation(arr);
-    <span class="hljs-keyword">return</span> arr.map(<span class="hljs-function"><span class="hljs-params">d</span> =&gt;</span> (d-mean)/sigma);
-  };</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-51">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-51">&#182;</a>
+                <a class="pilcrow" href="#section-58">&#182;</a>
               </div>
               <h2 id="other-functions">Other functions</h2>
 <p>Most of these don’t fit with the general paradigm this module is designed
@@ -1176,115 +1335,11 @@ yet.</p>
         </li>
         
         
-        <li id="section-52">
+        <li id="section-59">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-52">&#182;</a>
-              </div>
-              <h2 id="binary-functions-for-two-numbers-">Binary functions (for two numbers)</h2>
-
-            </div>
-            
-        </li>
-        
-        
-        <li id="section-53">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-53">&#182;</a>
-              </div>
-              <h3 id="gcd">gcd</h3>
-<p>Determines the greatest common divisor between two numbers, a and b.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  math.gcd = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">a, b</span>)</span>{
-    <span class="hljs-keyword">var</span> ref;
-    <span class="hljs-keyword">while</span> (b){
-      ref = [b, a % b], a = ref[<span class="hljs-number">0</span>], b = ref[<span class="hljs-number">1</span>];
-    }
-    <span class="hljs-keyword">return</span> a;
-  };</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-54">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-54">&#182;</a>
-              </div>
-              <h3 id="lcm">lcm</h3>
-<p>Determines the least common multiple of two numbers, a and b.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  math.lcm = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">a, b</span>)</span>{
-    <span class="hljs-keyword">return</span> a / math.gcd(a, b) * b;
-  };</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-55">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-55">&#182;</a>
-              </div>
-              <h2 id="trinary-functions-for-three-numbers-">Trinary functions (for three numbers)</h2>
-
-            </div>
-            
-        </li>
-        
-        
-        <li id="section-56">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-56">&#182;</a>
-              </div>
-              <h3 id="range">range</h3>
-<p>Given a number, s, range returns an array of integers between 1 and s
-(inclusive).</p>
-<p>Given two numbers s and t, range returns an array of integers between t and
-s (inclusive).</p>
-<p>Given three numders s, t, and i, range returns an array of integers between
-t and s such that the difference between each element in the output array
-is exactly i.</p>
-<p>Note that this function constitutes an exception to my general deprecation
-warning above. Having a range function is much to valuable to my purposes
-to eliminate, even if it doesn’t match the general design pattern of the
-rest of this module.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  math.range = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">stop, start, step</span>)</span>{
-    start = start || <span class="hljs-number">1</span>;
-    step = step || <span class="hljs-number">1</span>;
-
-    <span class="hljs-keyword">var</span> length = <span class="hljs-built_in">Math</span>.max(<span class="hljs-built_in">Math</span>.ceil((stop - start) / step), <span class="hljs-number">0</span>);
-    <span class="hljs-keyword">var</span> range = <span class="hljs-built_in">Array</span>(length);
-
-    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> idx = <span class="hljs-number">0</span>; idx &lt; length; idx++, start += step){
-      range[idx] = start;
-    }
-
-    <span class="hljs-keyword">return</span> range;
-  };</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-57">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-57">&#182;</a>
+                <a class="pilcrow" href="#section-59">&#182;</a>
               </div>
               <h3 id="slope">slope</h3>
 <p>Computes the slope between two ordered pairs.</p>
@@ -1299,11 +1354,11 @@ rest of this module.</p>
         </li>
         
         
-        <li id="section-58">
+        <li id="section-60">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-58">&#182;</a>
+                <a class="pilcrow" href="#section-60">&#182;</a>
               </div>
               <h3 id="transpose">Transpose</h3>
 <p>Computes a transpose of the given matrix.</p>
@@ -1325,11 +1380,11 @@ rest of this module.</p>
         </li>
         
         
-        <li id="section-59">
+        <li id="section-61">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-59">&#182;</a>
+                <a class="pilcrow" href="#section-61">&#182;</a>
               </div>
               <p>That’s all, folks!</p>
 
@@ -1345,7 +1400,7 @@ rest of this module.</p>
     <span class="hljs-built_in">window</span>.math = math;
   }
 
-}).call(<span class="hljs-keyword">this</span>);</pre></div></div>
+}).call();</pre></div></div>
             
         </li>
         

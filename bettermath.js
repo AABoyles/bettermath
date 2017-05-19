@@ -9,8 +9,8 @@
 
   // It's designed to work seamlessly as a mixin with the standard
   // [`Math`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math)
-  // object, However, I know that messing with standard globals makes some
-  // people sick to their stomachs, so it doesn't do it automatically.
+  // object. This should be very safe to do (but if you have any problems doing
+  // so, please let me know immediately.)
   //
   // If you're using it in the browser, you can access it from the `math`
   // global ([sorry](http://wiki.c2.com/?GlobalVariablesAreBad)). (Note the
@@ -27,7 +27,7 @@
   // Determines if a given object is an array.
   math.isArray = function(obj){
     if(Array.isArray) return Array.isArray(obj);
-    return variable.constructor === Array;
+    return obj.constructor === Array;
   };
 
   //### isObject
@@ -42,11 +42,35 @@
     var arr = obj;
     if(math.isArray(obj)){
       if(math.isObject(obj[0])){
-        var key = key || 'value';
-        var arr = obj.map(i => i[key]);
+        key = key || 'value';
+        arr = obj.map(i => i[key]);
       }
     }
     return arr;
+  };
+
+  //### range
+  // Given a number, s, range returns an array of integers between 1 and s
+  // (inclusive).
+  //
+  // Given two numbers s and t, range returns an array of integers between t and
+  // s (inclusive).
+  //
+  // Given three numders s, t, and i, range returns an array of integers between
+  // t and s + i - 1 (inclusive) such that the difference between each element
+  // in the output array is exactly i.
+  math.range = function(stop, start, step){
+    start = start || 1;
+    step = step || 1;
+
+    var length = Math.max(Math.ceil((stop - start) / step), 0);
+    var range = Array(length);
+
+    for (var idx = 0; idx < length; idx++, start += step){
+      range[idx] = start;
+    }
+
+    return range;
   };
 
   //## Mappers
@@ -80,7 +104,7 @@
 
   //### isNaN
   // Determines if a given object is [Not a Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN)
-  math.isNaN = function(obj){
+  math.isNaN = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.isNaN);
     }
@@ -114,6 +138,8 @@
     return obj < 0;
   };
 
+  //### isNonnegative
+  // Determines whether a number is nonnegative
   math.isNonnegative = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.isNonnegative);
@@ -121,6 +147,8 @@
     return obj >= 0;
   };
 
+  //### isNonpositive
+  // Determines whether a number is nonpositive
   math.isNonpositive = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.isNonpositive);
@@ -135,6 +163,15 @@
       return math.pluck(obj, key).map(math.isZero);
     }
     return obj === 0;
+  };
+
+  //### isNonzero
+  // Determines whether a number is nonzero
+  math.isNonzero = function(obj, key){
+    if(math.isArray(obj)){
+      return math.pluck(obj, key).map(math.isNonzero);
+    }
+    return obj !== 0;
   };
 
   //### isFinite
@@ -181,32 +218,25 @@
   // It isn't the most efficient possible implementation, but it's reasonably
   // simple.
   math.isPrime = function(obj, key){
-    if(math.isNumber(obj)){
-      if(math.isArray(obj)){
-        return math.pluck(obj, key).map(math.isPrime);
-      }
-      var safeN = Math.abs(Math.round(obj));
-      if (!obj){
-        return false;
-      } else if (obj !== 2){
-        var goUntil = Math.ceil(Math.sqrt(safeN));
-        for (var i = 2; i <= goUntil; i++){
-          if (safeN % i === 0){
-            return false;
-          }
+    if(math.isArray(obj)){
+      return math.pluck(obj, key).map(math.isPrime);
+    }
+    if (!obj){
+      return false;
+    } else if (obj !== 2){
+      var safeN = math.abs(Math.round(obj));
+      var goUntil = Math.ceil(math.sqrt(safeN));
+      for (var i = 2; i <= goUntil; i++){
+        if (safeN % i === 0){
+          return false;
         }
       }
-      return true;
     }
+    return true;
   };
 
   //### isComposite
   // Returns a boolean variable indicating whether a number n is composite.
-  //
-  // *Note* that for a numeric input, n, this is O(sqrt(n)).
-  // For arrays of size m, it's O(m*sqrt(n)).
-  // It isn't the most efficient possible implementation, but it's reasonably
-  // simple.
   math.isComposite = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.isComposite);
@@ -229,22 +259,26 @@
   // Returns the absolute value of a number.
   var origAbs = Math.abs;
   math.abs = function(obj, key){
-    if(math.isNumber(obj)){
-      return origAbs(obj);
-    }
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.abs);
     }
+    return origAbs(obj);
   };
 
   //### square
   // Multiplies a number by itself.
+  //
+  // Note that this function will accept arrays of objects, where math.pow will
+  // not.
   math.square = function(obj, key){
     return math.pow(math.pluck(obj, key), 2);
   };
 
   //### cube
   // Multiplies a number by its square.
+  //
+  // Note that this function will accept arrays of objects, where math.pow will
+  // not.
   math.cube = function(obj, key){
     return math.pow(math.pluck(obj, key), 3);
   };
@@ -256,13 +290,16 @@
   // which each entry is the corresponding value of the original array raised
   // to that exponent.
   //
-  //**WARNING! Overwrites `Math.pow` when mixed with Math**
-  //
-  // This should be safe to do, but if you encounter any issues doing so,
-  // please [let me know.](https://github.com/AABoyles/bettermath/issues)
+  // Given an array of object, should fail. If you need to raise an array of
+  // objects to an exponent, please use `math.square`, `math.cube`, `math.sqrt`,
+  // and `math.cbrt` for n = 2, 3, 1/2, and 1/3 respectively. For arbitrary
+  // values of n, please call `math.pluck` your array first, and pass the
+  // plucked array to `math.pow`.
   //
   // `math.pow(2,3)` &rArr; 8
-  var origPow = Math.pow; //Just in case we want to extend Math
+  //
+  // `math.pow([1, 2, 10], 3)` &rArr; [1, 8, 1000]
+  var origPow = Math.pow;
   math.pow = function(obj, n){
     if(math.isArray(obj)){
       return obj.map(i => math.pow(i, n));
@@ -272,20 +309,26 @@
 
   //### sqrt
   // Given a number, computes the Square Root
+  //
+  // Note that this function will accept arrays of objects, where math.pow will
+  // not.
   math.sqrt = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.sqrt);
     }
-    return Math.sqrt(obj);
+    return math.pow(obj, 1/2);
   };
 
   //### cbrt
   // Given a number, computes the Cube Root
+  //
+  // Note that this function will accept arrays of objects, where math.pow will
+  // not.
   math.cbrt = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.cbrt);
     }
-    return Math.cbrt(obj);
+    return math.pow(obj, 1/3);
   };
 
   //### factorial
@@ -337,14 +380,14 @@
     return math.samesign(obj, b) ? obj : -obj;
   };
 
-  //### undirected Edges
-  // Given an undirected graph of n nodes, what is the upper bound on the number
-  // of distinct edges?
+  //### undirectedEdges
+  // Computes the maximum number of distinct edges of an undirected graph of `n`
+  // nodes.
   math.undirectedEdges = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.undirectedEdges);
     }
-    return n * (n - 1) / 2;
+    return obj * (obj - 1) / 2;
   };
 
   //### factors
@@ -354,7 +397,7 @@
       obj.map(math.factors);
     }
     var result = [],
-        startN = Math.abs(Math.round(obj)),
+        startN = math.abs(Math.round(obj)),
         finished = false;
     while(!finished){
       finished = true;
@@ -379,7 +422,7 @@
     if(math.isArray(obj)){
       return obj.map(math.divisors);
     }
-    var safeN = Math.abs(Math.round(obj));
+    var safeN = math.abs(Math.round(obj));
     var result = [1];
     for(var i = 2; i <= safeN / 2; i++){
       if(safeN % i === 0){
@@ -402,12 +445,6 @@
   //### format
   // Truncates a number n at the given precision
   //
-  // *Note* that the necessity of the precision argument prevents passing a key,
-  // meaning that in order to use this on an array of objects, you must pluck it
-  // before you pass it. For example:
-  //
-  // `math.format([{a:1.234}, {a:2.345}], 2)` &rArr; Error
-  //
   // `var t = math.pluck([{a:1.234}, {a:2.345}], 'a'); math.format(t, 2);` &rArr;
   math.format = function(obj, precision){
     if(math.isArray(obj)){
@@ -428,25 +465,14 @@
     }
   };
 
-  //### movingAvg
-  // Computes a moving average of an array of numbers.
-  //
-  // In case this is non-obvious, this should return an array of fewer elements
-  // than the original array contained.
-  //
-  // `math.movingAvg([1,2,3,4,5], 3)` &rArr; [2,3,4]
-  math.movingAvg = function(arr, size){
-    var win, i, newarr = [];
-    for(i = size - 1; i <= arr.length; i++){
-      win = arr.slice(i - size, i);
-      if (win.length === size){
-        newarr.push(math.mean(win));
-      }
-    }
-    return newarr;
-  };
-
   //## Reducers
+  //
+  // Reducers are functions which accept an array and return (usually) a singe
+  // number. (Some, like `math.movingAvg` will return a smaller array).
+  // Perhaps the most recognizable reducer is the Arithmetic mean (more
+  // commonly just called the "average"), though there are many other well-
+  // known, simple reducers (as you can see from the list of functions between
+  // this paragraph and `math.mean`).
 
   //### sum
   // Computes the sum of an array of numbers (or an array of objects with a
@@ -468,6 +494,30 @@
   // `math.product([{b: 4},{b: 5},{b: 6}], 'b')` &rArr; 120
   math.product = math.multiply = function(obj, key){
     return math.pluck(obj, key).reduce((a, b) => a * b, 1);
+  };
+
+  //### gcd
+  // Determines the greatest common divisor between two numbers.
+  math.gcd = function(obj, b){
+    if(math.isArray(obj)){
+      return obj.map(i => math.gcd(i, b));
+    }
+    var ref;
+    while(b){
+      ref = [b, obj % b];
+      obj = ref[0];
+      b = ref[1];
+    }
+    return obj;
+  };
+
+  //### lcm
+  // Determines the least common multiple of two numbers.
+  math.lcm = function(obj, b){
+    if(math.isArray(obj)){
+      return obj.map(i => math.lcm(i, b));
+    }
+    return obj / math.gcd(obj, b) * b;
   };
 
   //### mean
@@ -497,43 +547,44 @@
   math.mode = math.modes = function(obj, key){
     var arr = math.pluck(obj, key);
 
-		if (!arr.length) return [];
+    if (!arr.length) return [];
 
-		var modeMap = {},
-		    maxCount = 0,
-		    modes = [];
+    var modeMap = {},
+        maxCount = 0,
+        modes = [];
 
-		arr.forEach(val => {
-			if (!modeMap[val]){
+    arr.forEach(val => {
+      if (!modeMap[val]){
         modeMap[val] = 1;
       } else {
         modeMap[val]++;
       }
-			if (modeMap[val] > maxCount){
-				modes = [val];
-				maxCount = modeMap[val];
-			} else if (modeMap[val] === maxCount){
-				modes.push(val);
-			}
-		});
-		return modes;
-	};
+      if (modeMap[val] > maxCount){
+        modes = [val];
+        maxCount = modeMap[val];
+      } else if (modeMap[val] === maxCount){
+        modes.push(val);
+      }
+    });
+    return modes;
+  };
 
   //### geometricMean
   // Given an array of numbers, returns
-  // the [geomatric mean](https://en.wikipedia.org/wiki/Geometric_mean).
+  // the [geometric mean](https://en.wikipedia.org/wiki/Geometric_mean).
   //
   // `math.geometricMean([3,9,27])` &rArr; 9
   math.geometricMean = function(obj, key){
     var arr = math.pluck(obj, key);
-    return Math.pow(math.product(arr),1/arr.length);
+    return math.pow(math.product(arr),1/arr.length);
   };
 
   //### Variance
   // Computes the variance of an array of numbers.
   //
   // `math.variance([1,2,3])` &rArr; 2/3
-  math.variance = function(arr){
+  math.variance = function(obj, key){
+    var arr = math.pluck(obj, key);
     var mean = math.mean(arr);
     return math.mean(arr.map(x => math.pow(x - mean, 2)));
   };
@@ -543,7 +594,7 @@
   //
   // `math.stdDeviation([1,2,3])` &rArr; 0.816496580927726
   math.stdDeviation = math.sigma = function(obj, key){
-    return Math.sqrt(math.variance(math.pluck(obj, key)));
+    return math.sqrt(math.variance(math.pluck(obj, key)));
   };
 
   //### meanAbsoluteDeviation
@@ -551,10 +602,10 @@
   //
   // `math.meanAbsoluteDeviation([1,2,3])` &rArr; 1
   math.meanAbsoluteDeviation = function(obj, key){
-    var arr = math.pluck(obj, key),
+    var arr  = math.pluck(obj, key),
         mean = math.mean(arr);
-		return math.mean(arr.map(n => Math.abs(n - mean)));
-	};
+    return math.mean(arr.map(n => math.abs(n - mean)));
+  };
 
   //### zscore
   // Computes the standard Z-score, *assuming a normal distribution*
@@ -567,63 +618,47 @@
     return arr.map(d => (d-mean)/sigma);
   };
 
+  //### wilson
+  // Given an array of boolean values and a Z-score, returns the
+  // [Wilson Score Interval](http://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval#Wilson_score_interval)
+  //
+  // Z-score is defaulted to cover the 95% interval.
+  math.wilson = function(obj, z){
+    var up    = obj.reduce((x, i) => i ? x + 1 : x, 0),
+        total = obj.length;
+    if(total <= 0 || total < up) return 0;
+    var avg = up/total,
+        z   = z || 1.644853,
+        z2  = math.square(z);
+    return (avg + z2/(2*total) - z*math.sqrt((avg*(1 - avg) + z2/(4*total))/total))/(1 + z2/total);
+  };
+
+  //### movingAvg
+  // Computes a moving average of an array of numbers.
+  //
+  // In case this is non-obvious, this should return an array of fewer elements
+  // than the original array contained.
+  //
+  // `math.movingAvg([1,2,3,4,5], 3)` &rArr; [2,3,4]
+  math.movingAvg = function(arr, size){
+    var win, i, newarr = [];
+    for(i = size - 1; i <= arr.length; i++){
+      win = arr.slice(i - size, i);
+      if (win.length === size){
+        newarr.push(math.mean(win));
+      }
+    }
+    return newarr;
+  };
+
   //## Other functions
-  // Most of these don't fit with the general paradigm this module is designed
+  // These don't fit with the general paradigm this module is designed
   // for. Accordingly, these should be considered at risk of deprecation.
   // If you need these operation, I'd encourage you to find a more
   // formal and complete module for working with matrices or euclidena geometry
   // or whatever. Never-the-less, I'm leaving them in because it seems some
   // people are using this module and I don't want to push any breaking changes
   // yet.
-
-  //## Binary functions (for two numbers)
-
-  //### gcd
-  // Determines the greatest common divisor between two numbers, a and b.
-  math.gcd = function(a, b){
-    var ref;
-    while (b){
-      ref = [b, a % b], a = ref[0], b = ref[1];
-    }
-    return a;
-  };
-
-  //### lcm
-  // Determines the least common multiple of two numbers, a and b.
-  math.lcm = function(a, b){
-    return a / math.gcd(a, b) * b;
-  };
-
-  //## Trinary functions (for three numbers)
-
-  //### range
-  // Given a number, s, range returns an array of integers between 1 and s
-  // (inclusive).
-  //
-  // Given two numbers s and t, range returns an array of integers between t and
-  // s (inclusive).
-  //
-  // Given three numders s, t, and i, range returns an array of integers between
-  // t and s such that the difference between each element in the output array
-  // is exactly i.
-  //
-  // Note that this function constitutes an exception to my general deprecation
-  // warning above. Having a range function is much to valuable to my purposes
-  // to eliminate, even if it doesn't match the general design pattern of the
-  // rest of this module.
-  math.range = function(stop, start, step){
-    start = start || 1;
-    step = step || 1;
-
-    var length = Math.max(Math.ceil((stop - start) / step), 0);
-    var range = Array(length);
-
-    for (var idx = 0; idx < length; idx++, start += step){
-      range[idx] = start;
-    }
-
-    return range;
-  };
 
   //### slope
   // Computes the slope between two ordered pairs.
@@ -659,4 +694,4 @@
     window.math = math;
   }
 
-}).call(this);
+}).call();
