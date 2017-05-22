@@ -21,6 +21,8 @@
   // It you're working in [node](http://nodejs.com), you can `require` it into
   // whatever you want.
 
+  math.orig = Object.assign({}, Math);
+
   //## Helper Functions
 
   //### isArray
@@ -255,6 +257,22 @@
     return origSign(obj);
   };
 
+  var origFloor = Math.floor;
+  math.floor = function(obj, key){
+    if(math.isArray(obj)){
+      return math.pluck(obj, key).map(math.floor);
+    }
+    return origFloor(obj);
+  };
+
+  var origCeil = Math.ceil;
+  math.ceil = function(obj, key){
+    if(math.isArray(obj)){
+      return math.pluck(obj, key).map(math.ceil);
+    }
+    return origCeil(obj);
+  };
+
   //### abs
   // Returns the absolute value of a number.
   var origAbs = Math.abs;
@@ -473,6 +491,22 @@
   // commonly just called the "average"), though there are many other well-
   // known, simple reducers (as you can see from the list of functions between
   // this paragraph and `math.mean`).
+
+  //### maxArray
+  // Computes the maximum of an array of numbers
+  //
+  //`math.maxArr([1,2,3]);` &rArr; 3
+  math.minArray = function(obj, key){
+    return Math.min(...math.pluck(obj, key));
+  };
+
+  //### maxArray
+  // Computes the maximum of an array of numbers
+  //
+  //`math.maxArr([1,2,3]);` &rArr; 3
+  math.maxArray = function(obj, key){
+    return Math.max(...math.pluck(obj, key));
+  };
 
   //### sum
   // Computes the sum of an array of numbers (or an array of objects with a
