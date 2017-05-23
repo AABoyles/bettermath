@@ -10,7 +10,7 @@
   // It's designed to work seamlessly as a mixin with the standard
   // [`Math`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math)
   // object. This should be very safe to do (but if you have any problems doing
-  // so, please let me know immediately.)
+  // so, please [let me know](https://github.com/AABoyles/bettermath/issues).)
   //
   // If you're using it in the browser, you can access it from the `math`
   // global ([sorry](http://wiki.c2.com/?GlobalVariablesAreBad)). (Note the
@@ -24,6 +24,9 @@
   math.orig = Object.assign({}, Math);
 
   //## Helper Functions
+
+  // To start, let's build out some simple functions which will be important
+  // building blocks for our later functions.
 
   //### isArray
   // Determines if a given object is an array.
@@ -39,7 +42,12 @@
   };
 
   //### Pluck
-  // Returns an array of numbers.
+  // Given a non-array, obj, returns obj.
+  //
+  // Given an array of numbers, returns the array of numbers.
+  //
+  // Given an array of objects and a string, 'key', returns an array of whatever
+  // was mapped to key in each element of the array.
   math.pluck = function(obj, key){
     var arr = obj;
     if(math.isArray(obj)){
@@ -204,7 +212,7 @@
   };
 
   //### isOdd
-  // Returns a boolean indicating whether a number n is odd.
+  // Determines whether a number is odd.
   math.isOdd = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.isOdd);
@@ -213,12 +221,11 @@
   };
 
   //### isPrime
-  // Returns a boolean variable indicating whether a number n is prime.
+  // Determines whether a number is prime.
   //
-  // *Note* that for a numeric input, n, this is O(sqrt(n)).
-  // For arrays of size m, it's O(m*sqrt(n)).
-  // It isn't the most efficient possible implementation, but it's reasonably
-  // simple.
+  // *Note* that for a numeric input, n, this is O(sqrt(n)). For arrays of size
+  // m, it's O(m*sqrt(n)). It isn't the most efficient possible implementation,
+  // but it's reasonably simple.
   math.isPrime = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.isPrime);
@@ -238,7 +245,7 @@
   };
 
   //### isComposite
-  // Returns a boolean variable indicating whether a number n is composite.
+  // Determines whether a number is composite.
   math.isComposite = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.isComposite);
@@ -283,6 +290,30 @@
     return origAbs(obj);
   };
 
+  //### pow
+  // Given a number and an exponent, returns the number raised to the exponent.
+  //
+  // Given an array of numbers, along with an exponent, returns an array for
+  // which each entry is the corresponding value of the original array raised
+  // to that exponent.
+  //
+  // Given an array of objects, should fail. If you need to raise an array of
+  // objects to an exponent, please use `math.square`, `math.cube`, `math.sqrt`,
+  // and `math.cbrt` for n = 2, 3, 1/2, and 1/3 respectively. For arbitrary
+  // values of n, please call `math.pluck` your array first, and pass the
+  // plucked array to `math.pow`.
+  //
+  // `math.pow(2,3)` &rArr; 8
+  //
+  // `math.pow([1, 2, 10], 3)` &rArr; [1, 8, 1000]
+  var origPow = Math.pow;
+  math.pow = function(obj, n){
+    if(math.isArray(obj)){
+      return obj.map(i => math.pow(i, n));
+    }
+    return origPow(obj, n);
+  };
+
   //### square
   // Multiplies a number by itself.
   //
@@ -301,40 +332,13 @@
     return math.pow(math.pluck(obj, key), 3);
   };
 
-  //### pow
-  // Given a number and an exponent, returns the number raised to the exponent.
-  //
-  // Given an array of numbers, along with an exponent, returns an array for
-  // which each entry is the corresponding value of the original array raised
-  // to that exponent.
-  //
-  // Given an array of object, should fail. If you need to raise an array of
-  // objects to an exponent, please use `math.square`, `math.cube`, `math.sqrt`,
-  // and `math.cbrt` for n = 2, 3, 1/2, and 1/3 respectively. For arbitrary
-  // values of n, please call `math.pluck` your array first, and pass the
-  // plucked array to `math.pow`.
-  //
-  // `math.pow(2,3)` &rArr; 8
-  //
-  // `math.pow([1, 2, 10], 3)` &rArr; [1, 8, 1000]
-  var origPow = Math.pow;
-  math.pow = function(obj, n){
-    if(math.isArray(obj)){
-      return obj.map(i => math.pow(i, n));
-    }
-    return origPow(obj, n);
-  };
-
   //### sqrt
   // Given a number, computes the Square Root
   //
   // Note that this function will accept arrays of objects, where math.pow will
   // not.
   math.sqrt = function(obj, key){
-    if(math.isArray(obj)){
-      return math.pluck(obj, key).map(math.sqrt);
-    }
-    return math.pow(obj, 1/2);
+    return math.pow(math.pluck(obj, key), 1/2);
   };
 
   //### cbrt
@@ -343,10 +347,7 @@
   // Note that this function will accept arrays of objects, where math.pow will
   // not.
   math.cbrt = function(obj, key){
-    if(math.isArray(obj)){
-      return math.pluck(obj, key).map(math.cbrt);
-    }
-    return math.pow(obj, 1/3);
+    return math.pow(math.pluck(obj, key), 1/3);
   };
 
   //### factorial
