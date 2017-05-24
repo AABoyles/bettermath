@@ -253,6 +253,20 @@
     return !math.isPrime(obj);
   };
 
+  //### isPerfect
+  // Determines whether a number is perfect.
+  //
+  // Because there are so few which can be represented as integers, it's vastly
+  // more efficient to just store them all than attempt to copmute and sum
+  // factors or check for Eulerian forms.
+  math.isPerfect = function(obj, key){
+    if(math.isArray(obj)){
+      return math.pluck(obj, key).map(math.isComposite);
+    }
+    var perfects = [6, 28, 496, 8128, 33550336, 8589869056, 137438691328];
+    return obj in perfects;
+  };
+
   //### sign
   // Returns one of [-1,0,1], indicating whether the given obj is negative,
   // zero, or positive
@@ -314,46 +328,102 @@
     return origPow(obj, n);
   };
 
+  // Note that the following functions will accept arrays of objects, where
+  // math.pow will not.
+
   //### square
   // Multiplies a number by itself.
-  //
-  // Note that this function will accept arrays of objects, where math.pow will
-  // not.
   math.square = function(obj, key){
     return math.pow(math.pluck(obj, key), 2);
   };
 
   //### cube
   // Multiplies a number by its square.
-  //
-  // Note that this function will accept arrays of objects, where math.pow will
-  // not.
   math.cube = function(obj, key){
     return math.pow(math.pluck(obj, key), 3);
   };
 
   //### sqrt
   // Given a number, computes the Square Root
-  //
-  // Note that this function will accept arrays of objects, where math.pow will
-  // not.
   math.sqrt = function(obj, key){
     return math.pow(math.pluck(obj, key), 1/2);
   };
 
   //### cbrt
   // Given a number, computes the Cube Root
-  //
-  // Note that this function will accept arrays of objects, where math.pow will
-  // not.
   math.cbrt = function(obj, key){
     return math.pow(math.pluck(obj, key), 1/3);
   };
 
+  //### exp
+  // Given a number x, computes e^x where e is Euler's natural base.
+  math.exp = function(obj, key){
+    if(math.isArray(obj)){
+      return math.pluck(obj, key).map(math.exp);
+    }
+    return math.pow(Math.E, obj);
+  };
+
+  //### expm1
+  // Given a number x, computes e^x-1 where e is Euler's natural base.
+  math.expm1 = function(obj, key){
+    if(math.isArray(obj)){
+      return math.pluck(obj, key).map(math.expm1);
+    }
+    return math.pow(Math.E, obj) - 1;
+  };
+
+  //### log
+  // Computes the natural logarithm of a number.
+  var origLog = Math.log;
+  math.log = math.ln = function(obj, key){
+    if(math.isArray(obj)){
+      return math.pluck(obj, key).map(math.log);
+    }
+    return origLog(obj);
+  };
+
+  //### log1p
+  // Given a number x, computes the natural logarithm of x + 1
+  math.log1p = math.ln1p = function(obj, key){
+    if(math.isArray(obj)){
+      return math.pluck(obj, key).map(math.log1p);
+    }
+    return math.log(1 + obj);
+  };
+
+  //### log10
+  // Computes the logarithm base 10 of a number.
+  var origLog10 = Math.log10;
+  math.log10 = function(obj, key){
+    if(math.isArray(obj)){
+      return math.pluck(obj, key).map(math.log10);
+    }
+    return origLog10(obj);
+  };
+
+  //### log2
+  // Computes the logarithm base 2 of a number.
+  var origLog2 = Math.log2;
+  math.log2 = math.lg = function(obj, key){
+    if(math.isArray(obj)){
+      return math.pluck(obj, key).map(math.log2);
+    }
+    return origLog2(obj);
+  };
+
+  ///### logb
+  // Computes the logarithm base b of an object (or each element within it)
+  math.logb = function(obj, base){
+    var b = math.log(base);
+    if(math.isArray(obj)){
+      return obj.map(x => math.log(x)/b);
+    }
+    return math.log(obj)/b;
+  };
+
   //### factorial
   // Given a number, computes the factorial.
-  //
-  // Given an array of numbers, computes the factorial of each.
   math.factorial = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.factorial);
