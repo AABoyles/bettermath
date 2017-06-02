@@ -721,6 +721,17 @@
     return math.pow(math.product(arr),1/arr.length);
   };
 
+  //### midrange
+  // Given an array of numbers, returns the [midrange]() (the mean of the max
+  // and min of a set of numbers).
+  //
+  // `math.midrange([3,9,27])` &rArr; 18
+  math.midrange = math.midRange = function(obj, key){
+    var arr = math.pluck(obj, key);
+    var min = math.min(arr);
+    return ((math.max(arr) - min) / 2) + min;
+  };
+
   //### Variance
   // Computes the variance of an array of numbers.
   //
