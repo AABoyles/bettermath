@@ -10,7 +10,7 @@
   // It's designed to work seamlessly as a mixin with the standard
   // [`Math`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math)
   // object. This should be very safe to do (but if you have any problems doing
-  // so, please let me know immediately.)
+  // so, please [let me know](https://github.com/AABoyles/bettermath/issues).)
   //
   // If you're using it in the browser, you can access it from the `math`
   // global ([sorry](http://wiki.c2.com/?GlobalVariablesAreBad)). (Note the
@@ -21,7 +21,12 @@
   // It you're working in [node](http://nodejs.com), you can `require` it into
   // whatever you want.
 
+  math.orig = Object.assign({}, Math);
+
   //## Helper Functions
+
+  // To start, let's build out some simple functions which will be important
+  // building blocks for our later functions.
 
   //### isArray
   // Determines if a given object is an array.
@@ -37,7 +42,12 @@
   };
 
   //### Pluck
-  // Returns an array of numbers.
+  // Given a non-array, obj, returns obj.
+  //
+  // Given an array of numbers, returns the array of numbers.
+  //
+  // Given an array of objects and a string, 'key', returns an array of whatever
+  // was mapped to key in each element of the array.
   math.pluck = function(obj, key){
     var arr = obj;
     if(math.isArray(obj)){
@@ -202,7 +212,7 @@
   };
 
   //### isOdd
-  // Returns a boolean indicating whether a number n is odd.
+  // Determines whether a number is odd.
   math.isOdd = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.isOdd);
@@ -211,12 +221,11 @@
   };
 
   //### isPrime
-  // Returns a boolean variable indicating whether a number n is prime.
+  // Determines whether a number is prime.
   //
-  // *Note* that for a numeric input, n, this is O(sqrt(n)).
-  // For arrays of size m, it's O(m*sqrt(n)).
-  // It isn't the most efficient possible implementation, but it's reasonably
-  // simple.
+  // *Note* that for a numeric input, n, this is O(sqrt(n)). For arrays of size
+  // m, it's O(m*sqrt(n)). It isn't the most efficient possible implementation,
+  // but it's reasonably simple.
   math.isPrime = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.isPrime);
@@ -236,12 +245,26 @@
   };
 
   //### isComposite
-  // Returns a boolean variable indicating whether a number n is composite.
+  // Determines whether a number is composite.
   math.isComposite = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.isComposite);
     }
     return !math.isPrime(obj);
+  };
+
+  //### isPerfect
+  // Determines whether a number is perfect.
+  //
+  // Because there are so few which can be represented as integers, it's vastly
+  // more efficient to just store them all than attempt to copmute and sum
+  // factors or check for Eulerian forms.
+  math.isPerfect = function(obj, key){
+    if(math.isArray(obj)){
+      return math.pluck(obj, key).map(math.isComposite);
+    }
+    var perfects = [6, 28, 496, 8128, 33550336, 8589869056, 137438691328];
+    return obj in perfects;
   };
 
   //### sign
@@ -255,6 +278,22 @@
     return origSign(obj);
   };
 
+  var origFloor = Math.floor;
+  math.floor = function(obj, key){
+    if(math.isArray(obj)){
+      return math.pluck(obj, key).map(math.floor);
+    }
+    return origFloor(obj);
+  };
+
+  var origCeil = Math.ceil;
+  math.ceil = function(obj, key){
+    if(math.isArray(obj)){
+      return math.pluck(obj, key).map(math.ceil);
+    }
+    return origCeil(obj);
+  };
+
   //### abs
   // Returns the absolute value of a number.
   var origAbs = Math.abs;
@@ -265,24 +304,6 @@
     return origAbs(obj);
   };
 
-  //### square
-  // Multiplies a number by itself.
-  //
-  // Note that this function will accept arrays of objects, where math.pow will
-  // not.
-  math.square = function(obj, key){
-    return math.pow(math.pluck(obj, key), 2);
-  };
-
-  //### cube
-  // Multiplies a number by its square.
-  //
-  // Note that this function will accept arrays of objects, where math.pow will
-  // not.
-  math.cube = function(obj, key){
-    return math.pow(math.pluck(obj, key), 3);
-  };
-
   //### pow
   // Given a number and an exponent, returns the number raised to the exponent.
   //
@@ -290,7 +311,7 @@
   // which each entry is the corresponding value of the original array raised
   // to that exponent.
   //
-  // Given an array of object, should fail. If you need to raise an array of
+  // Given an array of objects, should fail. If you need to raise an array of
   // objects to an exponent, please use `math.square`, `math.cube`, `math.sqrt`,
   // and `math.cbrt` for n = 2, 3, 1/2, and 1/3 respectively. For arbitrary
   // values of n, please call `math.pluck` your array first, and pass the
@@ -307,34 +328,102 @@
     return origPow(obj, n);
   };
 
+  // Note that the following functions will accept arrays of objects, where
+  // math.pow will not.
+
+  //### square
+  // Multiplies a number by itself.
+  math.square = function(obj, key){
+    return math.pow(math.pluck(obj, key), 2);
+  };
+
+  //### cube
+  // Multiplies a number by its square.
+  math.cube = function(obj, key){
+    return math.pow(math.pluck(obj, key), 3);
+  };
+
   //### sqrt
   // Given a number, computes the Square Root
-  //
-  // Note that this function will accept arrays of objects, where math.pow will
-  // not.
   math.sqrt = function(obj, key){
-    if(math.isArray(obj)){
-      return math.pluck(obj, key).map(math.sqrt);
-    }
-    return math.pow(obj, 1/2);
+    return math.pow(math.pluck(obj, key), 1/2);
   };
 
   //### cbrt
   // Given a number, computes the Cube Root
-  //
-  // Note that this function will accept arrays of objects, where math.pow will
-  // not.
   math.cbrt = function(obj, key){
+    return math.pow(math.pluck(obj, key), 1/3);
+  };
+
+  //### exp
+  // Given a number x, computes e^x where e is Euler's natural base.
+  math.exp = function(obj, key){
     if(math.isArray(obj)){
-      return math.pluck(obj, key).map(math.cbrt);
+      return math.pluck(obj, key).map(math.exp);
     }
-    return math.pow(obj, 1/3);
+    return math.pow(Math.E, obj);
+  };
+
+  //### expm1
+  // Given a number x, computes e^x-1 where e is Euler's natural base.
+  math.expm1 = function(obj, key){
+    if(math.isArray(obj)){
+      return math.pluck(obj, key).map(math.expm1);
+    }
+    return math.pow(Math.E, obj) - 1;
+  };
+
+  //### log
+  // Computes the natural logarithm of a number.
+  var origLog = Math.log;
+  math.log = math.ln = function(obj, key){
+    if(math.isArray(obj)){
+      return math.pluck(obj, key).map(math.log);
+    }
+    return origLog(obj);
+  };
+
+  //### log1p
+  // Given a number x, computes the natural logarithm of x + 1
+  math.log1p = math.ln1p = function(obj, key){
+    if(math.isArray(obj)){
+      return math.pluck(obj, key).map(math.log1p);
+    }
+    return math.log(1 + obj);
+  };
+
+  //### log10
+  // Computes the logarithm base 10 of a number.
+  var origLog10 = Math.log10;
+  math.log10 = function(obj, key){
+    if(math.isArray(obj)){
+      return math.pluck(obj, key).map(math.log10);
+    }
+    return origLog10(obj);
+  };
+
+  //### log2
+  // Computes the logarithm base 2 of a number.
+  var origLog2 = Math.log2;
+  math.log2 = math.lg = function(obj, key){
+    if(math.isArray(obj)){
+      return math.pluck(obj, key).map(math.log2);
+    }
+    return origLog2(obj);
+  };
+
+  ///### logb
+  // Computes the logarithm base b of an object (or each element within it)
+  math.logb = function(obj, base){
+    var b = math.log(base);
+    if(math.isArray(obj)){
+      return obj.map(x => math.log(x)/b);
+    }
+    return math.log(obj)/b;
   };
 
   //### factorial
   // Given a number, computes the factorial.
-  //
-  // Given an array of numbers, computes the factorial of each.
   math.factorial = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.factorial);
@@ -473,6 +562,22 @@
   // commonly just called the "average"), though there are many other well-
   // known, simple reducers (as you can see from the list of functions between
   // this paragraph and `math.mean`).
+
+  //### maxArray
+  // Computes the maximum of an array of numbers
+  //
+  //`math.maxArr([1,2,3]);` &rArr; 3
+  math.minArray = function(obj, key){
+    return Math.min(...math.pluck(obj, key));
+  };
+
+  //### maxArray
+  // Computes the maximum of an array of numbers
+  //
+  //`math.maxArr([1,2,3]);` &rArr; 3
+  math.maxArray = function(obj, key){
+    return Math.max(...math.pluck(obj, key));
+  };
 
   //### sum
   // Computes the sum of an array of numbers (or an array of objects with a
