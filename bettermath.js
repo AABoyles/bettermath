@@ -83,6 +83,43 @@
     return range;
   };
 
+  //## Randomizers
+  // Randomizers provide sources of pseudo-randomly values. These are largely
+  // based on Math.random, which is not crpytographically secure. Accordingly,
+  // These should not be used for applications which secure random values.
+
+  math.random = function(n){
+    if(!n) return Math.random();
+    var out = Array(n);
+    for(var i = 0; i < n; i++){
+      out[i] = math.random();
+    }
+    return out;
+  };
+
+  math.randomBoolean = function(n){
+    if(!n) return Math.random() > 0.5 ? 1 : -1;
+    var out = Array(n);
+    for(var i = 0; i < n; i++){
+      out[i] = math.randomBoolean();
+    }
+    return out;
+  };
+
+  math.randomDirection = math.randomSign = function(n){
+    if(!n) return Math.random() > 0.5 ? 1 : -1;
+    var out = Array(n);
+    for(var i = 0; i < n; i++){
+      out[i] = math.randomDirection();
+    }
+    return out;
+  };
+
+  math.randomElement = math.randomItem = function(obj, key){
+    var arr = math.pluck(obj, key);
+    return arr[math.floor(math.random()*arr.length)];
+  };
+
   //## Mappers
   // Mapper functions accept a single argument (which may be an array of numbers
   // or objects), and return an object of roughly similar type and size.
