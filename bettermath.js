@@ -115,8 +115,7 @@
     return out;
   };
 
-  math.randomElement = math.randomItem = function(obj, key){
-    var arr = math.pluck(obj, key);
+  math.randomElement = math.randomItem = function(arr){
     return arr[math.floor(math.random()*arr.length)];
   };
 
