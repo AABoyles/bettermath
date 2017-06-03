@@ -819,6 +819,24 @@
     return math.mean(arr.map(n => math.abs(n - mean)));
   };
 
+  //### hypot
+  // AKA Root sum of squarers
+  //
+  // Given any number of numbers (in an array or given as arbitrary arguments).
+  // returns the root sum of squares. For n numbers, this is equivalent to a
+  // hypotenuse in n-dimensional space.
+  var origHypot = Math.hypot;
+  math.hypot = math.rss = function(obj, key, ...others){
+    if(math.isArray(obj)){
+      var arr = math.pluck(obj, key);
+      if(math.isNumber(key)){
+        return math.hypot(...arr, key, ...others);
+      }
+      return math.hypot(...arr, ...others);
+    }
+    return origHypot(obj, key, ...others);
+  };
+
   //### zscore
   // Computes the standard Z-score, *assuming a normal distribution*
   //
