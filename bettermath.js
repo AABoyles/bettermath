@@ -630,6 +630,18 @@
     }
   };
 
+  ///### Trigonometry
+  // Performs trigonometric computations.
+  ['sin', 'sinh', 'cos', 'cosh', 'tan', 'tanh', 'acos', 'acosh', 'asin', 'asinh', 'atan', 'atanh'].forEach(fun => {
+    math[fun] = function(obj, key){
+      if(math.isArray(obj)){
+        var arr = math.pluck(obj, key);
+        return arr.map(i => math[fun](i));
+      }
+      return Math[fun](obj);
+    };
+  });
+
   //## Reducers
   //
   // Reducers are functions which accept an array and return (usually) a singe
