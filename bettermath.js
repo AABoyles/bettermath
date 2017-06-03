@@ -475,15 +475,54 @@
   };
 
   //### scale
+  // Multiplies by a scalar.
+  math.scale = function(arr, scalar){
+    if(math.isArray(arr)){
+      return arr.map(i => math.scale(i, scalar))
+    }
+    return arr * scalar;
+  };
+
+  //### scale01
+  // Transforms an array to fit within the range [0, 1], such that the
+  // ratios between any two pairs of elements are maintained.
+  //
+  // `math.scale01([0, 2, 5, 10])` &rArr; [0, 0.2, 0.5, 1]
+  math.scale01 = function(obj, key){
+    var arr = math.pluck(obj, key);
+    return math.scalemm(arr, 0, 1);
+  };
+
+  //### scale11
+  // Transforms an array to fit within the range [-1, 1], such that the
+  // ratios between any two pairs of elements are maintained.
+  //
+  // `math.scale11([0, 2, 5, 10])` &rArr; [-1, -0.6, 0, 1]
+  math.scale11 = function(obj, key){
+    var arr = math.pluck(obj, key);
+    return math.scalemm(arr, -1, 1);
+  };
+
+  //### scale0100
+  // Transforms an array to fit within the range [0, 100], such that the
+  // ratios between any two pairs of elements are maintained.
+  //
+  // `math.scale11([0, 2, 5, 10])` &rArr; [-1, -0.6, 0, 1]
+  math.scale0100 = function(obj, key){
+    var arr = math.pluck(obj, key);
+    return math.scalemm(arr, 0, 100);
+  };
+
+  //### scalemm
   // Transforms an array to fit within the range [min, max], such that the
   // ratios between any two elements are maintained.
   //
-  // `math.scale([0, 2, 5, 10])` &rArr; [0, 0.2, 0.5, 1]
-  math.scale = function(arr, min, max){
+  // `math.scalemm([0, 2, 5, 10])` &rArr; [-1, -0.6, 0, 1]
+  math.scalemm = math.scaleMM = function(arr, min, max){
     if(math.isUndefined(min)) min = 0;
     if(math.isUndefined(max)) max = 1;
-    var minArr = Math.min(...arr);
-    var oldRange = Math.max(...arr) - minArr;
+    var minArr = math.min(arr);
+    var oldRange = math.max(arr) - minArr;
     var newRange = max - min;
     return arr.map(i => (i - minArr) / oldRange * newRange + min);
   };
@@ -600,19 +639,27 @@
   // known, simple reducers (as you can see from the list of functions between
   // this paragraph and `math.mean`).
 
-  //### maxArray
+  //### min
   // Computes the maximum of an array of numbers
   //
   //`math.maxArr([1,2,3]);` &rArr; 3
-  math.minArray = function(obj, key){
+  var origMin = Math.min;
+  math.min = function(obj, key, ...others){
+    if(!math.isArray(obj)){
+      return origMin(obj, key, ...others);
+    }
     return Math.min(...math.pluck(obj, key));
   };
 
-  //### maxArray
+  //### max
   // Computes the maximum of an array of numbers
   //
   //`math.maxArr([1,2,3]);` &rArr; 3
-  math.maxArray = function(obj, key){
+  var origMax = Math.max;
+  math.max = function(obj, key, ...others){
+    if(!math.isArray(obj)){
+      return origMax(obj, key, ...others);
+    }
     return Math.max(...math.pluck(obj, key));
   };
 
