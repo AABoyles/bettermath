@@ -104,12 +104,12 @@ Now, let's do that with dozens of functions. That's why this project exists.
 
 This project started as a fork of [underscore.math](https://github.com/syntagmatic/underscore.math), but it's gotten pretty far removed for a simple fork. Some other sources of inspiration for this include:
 
-* [underscorejs](https://underscorejs.com)
 * [js-math](https://github.com/kaleb/js-math)
-* [math](https://github.com/danehansen/math)
-* [Mootools' Array.Math]( http://mootools.net/forge/p/array_math)
-* [Simple Statistics](https://github.com/simple-statistics/simple-statistics)
 * [arr-stat.js](https://gist.github.com/Daniel-Hug/7273430)
+* [math](https://github.com/danehansen/math)
+* [underscorejs](https://underscorejs.com)
+* [Mootools' Array.Math](http://mootools.net/forge/p/array_math)
+* [Simple Statistics](https://github.com/simple-statistics/simple-statistics)
 
 Thanks to all the developers of these!
 
@@ -169,9 +169,9 @@ Some sources of reducers I'm planning to mine for implementations:
 
 One thing I want to avoid is writing any more helpers than necessary. If you write one, please have a compelling reason and include it in the commit message.
 
-### Functions that don't work on Numbers or Arrays of numbers
+### Functions that don't work on Numbers or Arrays of Numbers
 
-I know, I've got a few. Those are going to go away with bettermath 1.0.0, so don't get used to them, and please don't write any new ones.
+Please don't write any.
 
 ## LICENSE
 

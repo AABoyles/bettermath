@@ -87,11 +87,36 @@
     return range;
   };
 
+  //### repeat
+  // Given a number, returns an array of length
+  //
+  // Note: This is an implementation of R's [`rep`](https://stat.ethz.ch/R-manual/R-devel/library/base/html/rep.html) function.
+  math.repeat = function(arr, times, each) {
+    if(!math.isArray(arr)){ arr = [arr]; }
+    if(!times){ return arr; }
+    if(!each){ each = 1; }
+    var temp = Array(each * arr.length);
+    arr.forEach(function(el, i){
+      for(j = 0; j < each; j++){
+        temp[i * each + j] = el;
+      }
+    });
+    ret = temp;
+    for(i = 1; i < times; i++){
+      ret = ret.concat(temp);
+    }
+    return ret;
+  };
+
   //## Randomizers
   // Randomizers provide sources of pseudo-randomly values. These are largely
   // based on Math.random, which is not crpytographically secure. Accordingly,
   // These should not be used for applications which secure random values.
 
+  //### random
+  // Returns a random value between 0 and 1.
+  //
+  // Given a number n, returns an array of n random values.
   math.random = function(n){
     if(!n) return math.orig.random();
     var out = Array(n);
@@ -101,6 +126,10 @@
     return out;
   };
 
+  //### randomBoolean
+  // Returns a random boolean value.
+  //
+  // Given a number n, returns an array of n random booleans.
   math.randomBoolean = function(n){
     if(!n) return math.orig.random() > 0.5 ? 1 : -1;
     var out = Array(n);
@@ -110,6 +139,12 @@
     return out;
   };
 
+  //### randomDirection
+  // AKA `randomSign`
+  //
+  // Returns one of [-1, 1]
+  //
+  // Given a number n, returns an array of n random directions.
   math.randomDirection = math.randomSign = function(n){
     if(!n) return math.orig.random() > 0.5 ? 1 : -1;
     var out = Array(n);
@@ -119,6 +154,10 @@
     return out;
   };
 
+  //### randomElement
+  // AKA `randomItem`
+  //
+  // Given an array, return one element selected at random.
   math.randomElement = math.randomItem = function(arr){
     return arr[math.floor(math.random()*arr.length)];
   };
@@ -133,6 +172,12 @@
   // Note that these will also generally work with arrays of objects, provided
   // you pass a 'key' argument indicating the key in the object which you wish
   // to operate on.
+
+  //### Identifiers
+  // This is a special class of mappers which return boolean variables,
+  // identifying if a given number meets a defined criterion. They are
+  // distinguished by the naming scheme is[Type] where [Type] is some
+  // term that's meaningful to either Mathematics or Javascript.
 
   //### isUndefined
   // Determines if a given object is undefined.
@@ -224,6 +269,15 @@
     return obj !== 0;
   };
 
+  //### isSameSign
+  // Compares the signs of two values
+  math.isSameSign = function(obj, b){
+    if(math.isArray(obj)){
+      return obj.map(i => math.sameSign(i, b));
+    }
+    return (obj >= 0) !== (b < 0);
+  };
+
   //### isFinite
   // Determines whether a number is finite
   math.isFinite = function(obj, key){
@@ -297,7 +351,7 @@
   // Determines whether a number is perfect.
   //
   // Because there are so few which can be represented as integers, it's vastly
-  // more efficient to just store them all than attempt to copmute and sum
+  // more efficient to just store them all than attempt to compute and sum
   // factors or check for Eulerian forms.
   math.isPerfect = function(obj, key){
     if(math.isArray(obj)){
@@ -317,6 +371,8 @@
     return math.orig.sign(obj);
   };
 
+  //### floor
+  // Returns the greatest integer less than a given value.
   math.floor = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.floor);
@@ -324,6 +380,8 @@
     return math.orig.floor(obj);
   };
 
+  //### ceil
+  // Returns the least integer greater than a given value.
   math.ceil = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.ceil);
@@ -339,6 +397,27 @@
     }
     return math.orig.round(obj);
   };
+
+  //### clamp
+  // Returns the nearest value to a number within the range [lower, upper].
+  math.clamp = function(arr, lower, upper){
+    if(math.isArray(arr)){
+      return arr.map(i => math.clamp(i, lower, upper));
+    }
+    if(arr < lower){ return lower; }
+    if(arr > upper){ return upper; }
+    return arr;
+  };
+
+  //### trunc
+  // Returns an integer with all digits less than one truncated.
+  math.trunc = function(obj, key){
+    if(math.isArray(obj)){
+      return math.pluck(obj, key).map(trunc);
+    }
+    return math.orig.trunc(obj);
+  };
+
   //### abs
   // Returns the absolute value of a number.
   math.abs = function(obj, key){
@@ -346,6 +425,97 @@
       return math.pluck(obj, key).map(math.abs);
     }
     return math.orig.abs(obj);
+  };
+
+  //### add
+  // Adds a value to each element of an array.
+  math.add = function(arr, summand){
+    if(math.isArray(arr)){
+      return arr.map(i => math.add(i, summand));
+    }
+    return arr + summand;
+  };
+
+  //### subtract
+  // Subtracts a value from each element of an array.
+  math.subtract = function(arr, subtrahend){
+    if(math.isArray(arr)){
+      return arr.map(minuend => math.subtract(minuend, subtrahend));
+    }
+    return arr - subtrahend;
+  };
+
+  //### multiply
+  // AKA `scale`
+  //
+  // Multiplies by a scalar.
+  math.multiply = math.scale = function(arr, scalar){
+    if(math.isArray(arr)){
+      return arr.map(i => math.scale(i, scalar))
+    }
+    return arr * scalar;
+  };
+
+  //### scale01
+  // Transforms an array to fit within the range [0, 1], such that the
+  // ratios between any two pairs of elements are maintained.
+  //
+  // `math.scale01([0, 2, 5, 10])` &rArr; [0, 0.2, 0.5, 1]
+  math.scale01 = function(obj, key){
+    var arr = math.pluck(obj, key);
+    return math.scalemm(arr, 0, 1);
+  };
+
+  //### scale11
+  // Transforms an array to fit within the range [-1, 1], such that the
+  // ratios between any two pairs of elements are maintained.
+  //
+  // `math.scale11([0, 2, 5, 10])` &rArr; [-1, -0.6, 0, 1]
+  math.scale11 = function(obj, key){
+    var arr = math.pluck(obj, key);
+    return math.scalemm(arr, -1, 1);
+  };
+
+  //### scale0100
+  // Transforms an array to fit within the range [0, 100], such that the
+  // ratios between any two pairs of elements are maintained.
+  //
+  // `math.scale11([0, 2, 5, 10])` &rArr; [-1, -0.6, 0, 1]
+  math.scale0100 = function(obj, key){
+    var arr = math.pluck(obj, key);
+    return math.scalemm(arr, 0, 100);
+  };
+
+  //### scalemm
+  // Transforms an array to fit within the range [min, max], such that the
+  // ratios between any two elements are maintained.
+  //
+  // `math.scalemm([0, 2, 5, 10])` &rArr; [-1, -0.6, 0, 1]
+  math.scalemm = math.scaleMM = function(arr, min, max){
+    if(math.isUndefined(min)) min = 0;
+    if(math.isUndefined(max)) max = 1;
+    var minArr = math.min(arr);
+    var oldRange = math.max(arr) - minArr;
+    var newRange = max - min;
+    return arr.map(i => (i - minArr) / oldRange * newRange + min);
+  };
+
+  //### divide
+  // Divides each element in arr by divisor.
+  math.divide = function(arr, divisor){
+    if(math.isArray(arr)){
+      return arr.map(dividend => math.divide(dividend, divisor))
+    }
+    return arr / divisor;
+  };
+
+  //### modulo
+  // Divides each element in arr by divisor, and returns the remainder.
+  math.modulo = function(arr, divisor){
+    if(math.isArray(arr)){
+      return arr.map(dividend => math.modulo(dividend, divisor))
+    }
+    return arr % divisor;
   };
 
   //### pow
@@ -452,11 +622,12 @@
     return math.orig.log2(obj);
   };
 
-  ///### logb
+  //### logb
   // Computes the logarithm base b of an object (or each element within it)
   math.logb = function(obj, base){
     var b = math.log(base);
     if(math.isArray(obj)){
+      //I know, this breaks the design pattern, but it saves `n` operations.
       return obj.map(x => math.log(x)/b);
     }
     return math.log(obj)/b;
@@ -475,68 +646,6 @@
     } else {
       return math.product(math.range(obj));
     }
-  };
-
-  //### scale
-  // Multiplies by a scalar.
-  math.scale = function(arr, scalar){
-    if(math.isArray(arr)){
-      return arr.map(i => math.scale(i, scalar))
-    }
-    return arr * scalar;
-  };
-
-  //### scale01
-  // Transforms an array to fit within the range [0, 1], such that the
-  // ratios between any two pairs of elements are maintained.
-  //
-  // `math.scale01([0, 2, 5, 10])` &rArr; [0, 0.2, 0.5, 1]
-  math.scale01 = function(obj, key){
-    var arr = math.pluck(obj, key);
-    return math.scalemm(arr, 0, 1);
-  };
-
-  //### scale11
-  // Transforms an array to fit within the range [-1, 1], such that the
-  // ratios between any two pairs of elements are maintained.
-  //
-  // `math.scale11([0, 2, 5, 10])` &rArr; [-1, -0.6, 0, 1]
-  math.scale11 = function(obj, key){
-    var arr = math.pluck(obj, key);
-    return math.scalemm(arr, -1, 1);
-  };
-
-  //### scale0100
-  // Transforms an array to fit within the range [0, 100], such that the
-  // ratios between any two pairs of elements are maintained.
-  //
-  // `math.scale11([0, 2, 5, 10])` &rArr; [-1, -0.6, 0, 1]
-  math.scale0100 = function(obj, key){
-    var arr = math.pluck(obj, key);
-    return math.scalemm(arr, 0, 100);
-  };
-
-  //### scalemm
-  // Transforms an array to fit within the range [min, max], such that the
-  // ratios between any two elements are maintained.
-  //
-  // `math.scalemm([0, 2, 5, 10])` &rArr; [-1, -0.6, 0, 1]
-  math.scalemm = math.scaleMM = function(arr, min, max){
-    if(math.isUndefined(min)) min = 0;
-    if(math.isUndefined(max)) max = 1;
-    var minArr = math.min(arr);
-    var oldRange = math.max(arr) - minArr;
-    var newRange = max - min;
-    return arr.map(i => (i - minArr) / oldRange * newRange + min);
-  };
-
-  //### sameSign
-  // Compares the signs of two values
-  math.sameSign = function(obj, b){
-    if(math.isArray(obj)){
-      return obj.map(i => math.sameSign(i, b));
-    }
-    return (obj >= 0) !== (b < 0);
   };
 
   //### copySign
@@ -621,8 +730,10 @@
     return (obj.toFixed(precision))/1;
   };
 
-  //### Sort
-  // Sorts an array of numbers.
+  //### sort
+  // Given an array of numbers, returns the array sorted.
+  //
+  // *Warning:* This implements an in-place algorithm.
   //
   // `math.sort([3,1,2])` &rArr; [1,2,3]
   math.sort = function(obj, descending){
@@ -633,7 +744,24 @@
     }
   };
 
-  ///### Trigonometry
+  //### shuffle
+  // Returns a shuffled array.
+  //
+  // *Warning:* This implements [Fisher-Yates Shuffling](http://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle),
+  // which is an an in-place algorithm.
+  math.shuffle = function(obj, key){
+    var arr = math.pluck(obj, key);
+    var m = arr.length, t, i;
+    while (m){
+      i = math.floor(math.random() * m--);
+      t = arr[m];
+      arr[m] = arr[i];
+      arr[i] = t;
+    }
+    return arr;
+  };
+
+  //### Trigonometry
   // Performs trigonometric computations.
   ['sin', 'sinh', 'cos', 'cosh', 'tan', 'tanh', 'acos', 'acosh', 'asin', 'asinh', 'atan', 'atanh'].forEach(fun => {
     math[fun] = function(obj, key){
@@ -644,6 +772,21 @@
       return math.orig[fun](obj);
     };
   });
+
+  math.atan2 = function(arr, b){
+    return math.atan(math.divide(arr, b));
+  };
+
+  //### zScore
+  // Computes the standard Z-score, *assuming a normal distribution.*
+  //
+  // `math.zScore([1,2,3])` &rArr; [-1.224744871391589, 0, 1.224744871391589]
+  math.zScore = math.zscore = function(obj, key){
+    var arr = math.pluck(obj, key),
+        mean = math.mean(arr),
+        sigma = math.stdDeviation(arr);
+    return arr.map(d => (d-mean)/sigma);
+  };
 
   //## Reducers
   //
@@ -683,7 +826,7 @@
   //`math.sum([1,2,3]);` &rArr; 6
   //
   //`math.sum([{b: 4},{b: 5},{b: 6}], 'b')` &rArr; 15
-  math.sum = math.add = function(obj, key){
+  math.sum = function(obj, key){
     return math.pluck(obj, key).reduce((a, b) => a + b, 0);
   };
 
@@ -694,9 +837,15 @@
   // `math.product([1,2,3])` &rArr; 6
   //
   // `math.product([{b: 4},{b: 5},{b: 6}], 'b')` &rArr; 120
-  math.product = math.multiply = function(obj, key){
+  math.product = function(obj, key){
     return math.pluck(obj, key).reduce((a, b) => a * b, 1);
   };
+
+  // If you're curions, there's no implementation of difference or quotient
+  // because subraction and division are non-commutative, which makes them
+  // (modestly) difficult to reason about in a sufficiently general way.
+  // Accordingly, it seems better that someone who needs such a function
+  // actually implement the logic themselves.
 
   //### gcd
   // Determines the greatest common divisor between two numbers.
@@ -805,7 +954,7 @@
   //### stdDeviation
   // Computes the Standard Deviation of an array of numbers.
   //
-  // `math.stdDeviation([1,2,3])` &rArr; 0.816496580927726
+  // `math.stdDeviation([1,2,3])` &rArr; 0.8165...
   math.stdDeviation = math.sigma = function(obj, key){
     return math.sqrt(math.variance(math.pluck(obj, key)));
   };
@@ -821,7 +970,7 @@
   };
 
   //### hypot
-  // AKA Root sum of squarers
+  // AKA `rss` for "Root sum of squares"
   //
   // Given any number of numbers (in an array or given as arbitrary arguments).
   // returns the root sum of squares. For n numbers, this is equivalent to a
@@ -834,16 +983,6 @@
       }
       return math.hypot(...arr, ...others);
     }
-
-  //### zscore
-  // Computes the standard Z-score, *assuming a normal distribution*
-  //
-  // `math.zscore([1,2,3])` &rArr; [-1.224744871391589, 0, 1.224744871391589]
-  math.zscore = function(obj, key){
-    var arr = math.pluck(obj, key),
-        mean = math.mean(arr),
-        sigma = math.stdDeviation(arr);
-    return arr.map(d => (d-mean)/sigma);
     return math.orig.hypot(obj, key, ...others);
   };
 
@@ -878,38 +1017,6 @@
       }
     }
     return newarr;
-  };
-
-  //## Other functions
-  // These don't fit with the general paradigm this module is designed
-  // for. Accordingly, these should be considered at risk of deprecation.
-  // If you need these operation, I'd encourage you to find a more
-  // formal and complete module for working with matrices or euclidena geometry
-  // or whatever. Never-the-less, I'm leaving them in because it seems some
-  // people are using this module and I don't want to push any breaking changes
-  // yet.
-
-  //### slope
-  // Computes the slope between two ordered pairs.
-  //
-  // `math.slope([0,0],[1,2])` &rArr; 2
-  math.slope = function(a, b){
-    return (a[1] - b[1]) / (a[0] - b[0]);
-  };
-
-  //### Transpose
-  // Computes a transpose of the given matrix.
-  //
-  //`math.transpose(([1,2,3], [4,5,6], [7,8,9]])` &rArr; [[1,4,7], [2,5,8], [3,6,9]]
-  math.transpose = function(arr){
-    var trans = [];
-    arr.forEach((row, y) => {
-      row.forEach((col, x) => {
-        if (!trans[x]) trans[x] = [];
-        trans[x][y] = col;
-      });
-    });
-    return trans;
   };
 
   //That's all, folks!

@@ -107,10 +107,9 @@ test("Objects", function() {
 module("Scale");
 
 test("Arrays", function() {
-  expect(3);
-  deepEqual( Math.scale([1, 2, 5]), [0, 0.25, 1], "Scale to 1" );
+  expect(2);
+  deepEqual( Math.scale01([1, 2, 5]), [0, 0.25, 1], "Scale to 1" );
   deepEqual( Math.scale([1, 2, 5], 1, 100), [1, 2, 5], "Scale to 100" );
-  deepEqual( Math.scale([1, 2, 5], 100, 1), [0.2, 0.4, 1], "Implied 1" );
 });
 
 module("Numeric Sort");
@@ -148,42 +147,6 @@ module("Standard Deviation");
 test("Arrays", function() {
   expect(1);
   equal( Math.stdDeviation([1,2,3]), Math.sqrt(2/3), "Variance of [1,2,3]" );
-});
-
-module("Z Score");
-
-test("Arrays", function() {
-  expect(1);
-  deepEqual(
-    Math.zscore([1,2,3]),
-    ["-1.225", "0.000", "1.225"],
-    "Z Score of [1,2,3]"
-  );
-});
-
-test("Objects", function() {
-  expect(1);
-  deepEqual(
-    Math.zscore([{a: 1},{a: 2},{a: 3}], 'a'),
-    ["-1.225", "0.000", "1.225"],
-    "Z Score of [1,2,3]"
-  );
-});
-
-module("Transpose");
-
-test("Arrays", function() {
-  expect(1);
-  deepEqual(
-    Math.transpose(
-      [[1,2,3],
-       [4,5,6],
-       [7,8,9]]),
-      [[1,4,7],
-       [2,5,8],
-       [3,6,9]],
-      "Tranpose 3x3"
-    );
 });
 
 module("Power (Exponent)");
