@@ -7,11 +7,6 @@
 
 (function(){
 
-  // It's designed to work seamlessly as a mixin with the standard
-  // [`Math`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math)
-  // object. This should be very safe to do (but if you have any problems doing
-  // so, please [let me know](https://github.com/AABoyles/bettermath/issues).)
-  //
   // If you're using it in the browser, you can access it from the `math`
   // global ([sorry](http://wiki.c2.com/?GlobalVariablesAreBad)). (Note the
   // lower-case 'm').
@@ -21,10 +16,22 @@
   // It you're working in [node](http://nodejs.com), you can `require` it into
   // whatever you want.
 
-  math.orig = Object.assign({}, Math);
+  // It's designed to work seamlessly as a mixin with the standard
+  // [`Math`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math)
+  // object. This should be [very safe to do](https://aaboyles.github.io/bettermath/test/mixindex.html),
+  // but if you have any problems doing so, please [let me know](https://github.com/AABoyles/bettermath/issues).)
+  // To preserve the original implementations of the functions in Math in case
+  // you do use it as a mixin, let's clone Math to `math.orig`.
+  math.orig = {};
+  Object.getOwnPropertyNames(Math).forEach((key) => {
+    if(typeof Math[key] == "function"){
+      return math.orig[key] = Math[key].bind({});
+    } else {
+      return math.orig[key] = Math[key];
+    }
+  });
 
   //## Helper Functions
-
   // To start, let's build out some simple functions which will be important
   // building blocks for our later functions.
 
@@ -72,14 +79,11 @@
   math.range = function(stop, start, step){
     start = start || 1;
     step = step || 1;
-
-    var length = Math.max(Math.ceil((stop - start) / step), 0);
+    var length = math.max(math.ceil((stop - start) / step), 0);
     var range = Array(length);
-
     for (var idx = 0; idx < length; idx++, start += step){
       range[idx] = start;
     }
-
     return range;
   };
 
@@ -89,7 +93,7 @@
   // These should not be used for applications which secure random values.
 
   math.random = function(n){
-    if(!n) return Math.random();
+    if(!n) return math.orig.random();
     var out = Array(n);
     for(var i = 0; i < n; i++){
       out[i] = math.random();
@@ -98,7 +102,7 @@
   };
 
   math.randomBoolean = function(n){
-    if(!n) return Math.random() > 0.5 ? 1 : -1;
+    if(!n) return math.orig.random() > 0.5 ? 1 : -1;
     var out = Array(n);
     for(var i = 0; i < n; i++){
       out[i] = math.randomBoolean();
@@ -107,7 +111,7 @@
   };
 
   math.randomDirection = math.randomSign = function(n){
-    if(!n) return Math.random() > 0.5 ? 1 : -1;
+    if(!n) return math.orig.random() > 0.5 ? 1 : -1;
     var out = Array(n);
     for(var i = 0; i < n; i++){
       out[i] = math.randomDirection();
@@ -269,8 +273,8 @@
     if (!obj){
       return false;
     } else if (obj !== 2){
-      var safeN = math.abs(Math.round(obj));
-      var goUntil = Math.ceil(math.sqrt(safeN));
+      var safeN = math.abs(math.round(obj));
+      var goUntil = math.ceil(math.sqrt(safeN));
       for (var i = 2; i <= goUntil; i++){
         if (safeN % i === 0){
           return false;
@@ -306,38 +310,42 @@
   //### sign
   // Returns one of [-1,0,1], indicating whether the given obj is negative,
   // zero, or positive
-  var origSign = Math.sign;
   math.sign = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.sign);
     }
-    return origSign(obj);
+    return math.orig.sign(obj);
   };
 
-  var origFloor = Math.floor;
   math.floor = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.floor);
     }
-    return origFloor(obj);
+    return math.orig.floor(obj);
   };
 
-  var origCeil = Math.ceil;
   math.ceil = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.ceil);
     }
-    return origCeil(obj);
+    return math.orig.ceil(obj);
   };
 
+  //### round
+  // Returns the nearest integer to a given value.
+  math.round = function(obj, key){
+    if(math.isArray(obj)){
+      return math.pluck(obj, key).map(math.round);
+    }
+    return math.orig.round(obj);
+  };
   //### abs
   // Returns the absolute value of a number.
-  var origAbs = Math.abs;
   math.abs = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.abs);
     }
-    return origAbs(obj);
+    return math.orig.abs(obj);
   };
 
   //### pow
@@ -356,12 +364,11 @@
   // `math.pow(2,3)` &rArr; 8
   //
   // `math.pow([1, 2, 10], 3)` &rArr; [1, 8, 1000]
-  var origPow = Math.pow;
   math.pow = function(obj, n){
     if(math.isArray(obj)){
       return obj.map(i => math.pow(i, n));
     }
-    return origPow(obj, n);
+    return math.orig.pow(obj, n);
   };
 
   // Note that the following functions will accept arrays of objects, where
@@ -397,7 +404,7 @@
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.exp);
     }
-    return math.pow(Math.E, obj);
+    return math.pow(math.orig.E, obj);
   };
 
   //### expm1
@@ -406,17 +413,16 @@
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.expm1);
     }
-    return math.pow(Math.E, obj) - 1;
+    return math.pow(math.orig.E, obj) - 1;
   };
 
   //### log
   // Computes the natural logarithm of a number.
-  var origLog = Math.log;
   math.log = math.ln = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.log);
     }
-    return origLog(obj);
+    return math.orig.log(obj);
   };
 
   //### log1p
@@ -430,22 +436,20 @@
 
   //### log10
   // Computes the logarithm base 10 of a number.
-  var origLog10 = Math.log10;
   math.log10 = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.log10);
     }
-    return origLog10(obj);
+    return math.orig.log10(obj);
   };
 
   //### log2
   // Computes the logarithm base 2 of a number.
-  var origLog2 = Math.log2;
   math.log2 = math.lg = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.log2);
     }
-    return origLog2(obj);
+    return math.orig.log2(obj);
   };
 
   ///### logb
@@ -561,7 +565,7 @@
       obj.map(math.factors);
     }
     var result = [],
-        startN = math.abs(Math.round(obj)),
+        startN = math.abs(math.round(obj)),
         finished = false;
     while(!finished){
       finished = true;
@@ -586,7 +590,7 @@
     if(math.isArray(obj)){
       return obj.map(math.divisors);
     }
-    var safeN = math.abs(Math.round(obj));
+    var safeN = math.abs(math.round(obj));
     var result = [1];
     for(var i = 2; i <= safeN / 2; i++){
       if(safeN % i === 0){
@@ -601,7 +605,7 @@
   // numbers, a and b.
   math.between = function (obj, a, b){
     if(math.isArray(obj)){
-      return obj.map((i) => math.between(i));
+      return obj.map(i => math.between(i, a, b));
     }
     return (a<=obj && obj<=b) || (b<=obj && obj<=a);
   };
@@ -637,7 +641,7 @@
         var arr = math.pluck(obj, key);
         return arr.map(i => math[fun](i));
       }
-      return Math[fun](obj);
+      return math.orig[fun](obj);
     };
   });
 
@@ -654,24 +658,22 @@
   // Computes the maximum of an array of numbers
   //
   //`math.maxArr([1,2,3]);` &rArr; 3
-  var origMin = Math.min;
   math.min = function(obj, key, ...others){
     if(!math.isArray(obj)){
-      return origMin(obj, key, ...others);
+      return math.orig.min(obj, key, ...others);
     }
-    return Math.min(...math.pluck(obj, key));
+    return math.orig.min(...math.pluck(obj, key));
   };
 
   //### max
   // Computes the maximum of an array of numbers
   //
   //`math.maxArr([1,2,3]);` &rArr; 3
-  var origMax = Math.max;
   math.max = function(obj, key, ...others){
     if(!math.isArray(obj)){
-      return origMax(obj, key, ...others);
+      return math.orig.max(obj, key, ...others);
     }
-    return Math.max(...math.pluck(obj, key));
+    return math.orig.max(...math.pluck(obj, key));
   };
 
   //### sum
@@ -824,7 +826,6 @@
   // Given any number of numbers (in an array or given as arbitrary arguments).
   // returns the root sum of squares. For n numbers, this is equivalent to a
   // hypotenuse in n-dimensional space.
-  var origHypot = Math.hypot;
   math.hypot = math.rss = function(obj, key, ...others){
     if(math.isArray(obj)){
       var arr = math.pluck(obj, key);
@@ -833,8 +834,6 @@
       }
       return math.hypot(...arr, ...others);
     }
-    return origHypot(obj, key, ...others);
-  };
 
   //### zscore
   // Computes the standard Z-score, *assuming a normal distribution*
@@ -845,6 +844,7 @@
         mean = math.mean(arr),
         sigma = math.stdDeviation(arr);
     return arr.map(d => (d-mean)/sigma);
+    return math.orig.hypot(obj, key, ...others);
   };
 
   //### wilson
