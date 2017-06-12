@@ -48,7 +48,7 @@ Otherwise, you can just access everything through `math`.
 
 ```javascript
 math.median([1,2,3,4])
-2.5
+> 2.5
 ```
 
 ## DOCUMENTATION
@@ -57,27 +57,29 @@ math.median([1,2,3,4])
 
 ## TESTS
 
-[We got some.](http://aaboyles.github.io/bettermath/test) Coverage isn't awesome, but it's a work in progress.
+[We got some of those too.](http://aaboyles.github.io/bettermath/test) Coverage isn't awesome, but it's a work in progress.
 
 ## INSPIRATION
 
-This project is a direct result of the fact that I'm basically an R coder. In R the fundamental datastructure is a Vector. While there isn't a perfect analog in Javascript, arrays of numbers can serve for many similar purposes. But Javascript arrays don't have a ton of useful mathematical methods. For example, to multiply the elements of a vector by a scalar in R, you'd do something like this:
+This project is a direct result of the fact that I'm basically an R coder. In R the fundamental data structure is a Vector. While there isn't a perfect analog in Javascript, arrays of numbers can serve for many similar purposes. But Javascript arrays don't have a ton of useful mathematical methods. For example, to multiply the elements of a vector by a scalar in R, you'd do something like this:
 
 ```r
 myVector <- c(1,2,3,4,5)
 scalar <- 10
 myVector * scalar
+> c(10,20,30,40,50)
 ```
 In contrast, javascript requires us to employ some sort of loop:
 
 ```javascript
-myArray = [1,2,3,4,5];
-scalar = 10;
-output = [];
+var myArray = [1,2,3,4,5];
+var scalar = 10;
+var output = [];
 for(var i = 0; i < myArray.length; i++){
   output.push(i * scalar);
 }
 output
+> [10,20,30,40,50]
 ```
 
 While we don't really want to mess with the primitives in javascript to make it work more like R, we can at least define a function to do the work for us.
@@ -95,9 +97,10 @@ function scale(vector, scalar){
 Now, instead of thinking through the loop structure, we've abstracted it away to a reusable function. We can now invoke it like so:
 
 ```javascript
-myArray = [1,2,3,4,5];
-scalar = 10;
+var myArray = [1,2,3,4,5];
+var scalar = 10;
 scale(myArray, scalar);
+> [10,20,30,40,50]
 ```
 
 Now, let's do that with dozens of functions. That's why this project exists.
@@ -127,7 +130,8 @@ If you'd like to contribute a new method, please adhere to the following design 
 
 ### Mappers
 
-These are the functions which are most urgently needed at this time. Pick a function in Math [that isn't in bettermath](https://aaboyles.github.io/bettermath/docs/todo.html) and implement it, like so:
+These are the functions which are most urgently needed at this time. Pick a
+function and implement it, like so:
 
 ```javascript
 //### myNewFunction
@@ -165,13 +169,22 @@ Some sources of reducers I'm planning to mine for implementations:
 * https://en.wikipedia.org/wiki/Central_tendency#Measures_of_central_tendency
 * https://en.wikipedia.org/wiki/Statistical_dispersion
 
+A note on non-commutative reducers:
+
+If you're curions, there's no implementation of difference or quotient because
+subraction and division are non-commutative, which makes them (modestly)
+difficult to reason about in a sufficiently general way. Accordingly, it seems
+better that someone who needs such a function actually implement the logic
+themselves. I am open to compelling arguments otherwise, if you'd like to
+[present one.](https://github.com/AABoyles/bettermath/issues/new)
+
 ### Helpers
 
-One thing I want to avoid is writing any more helpers than necessary. If you write one, please have a compelling reason and include it in the commit message.
+One thing I want to avoid is writing any more helpers than necessary. If you write one, please have a compelling reason (i.e. a mapper or reducer which requires it) and include an explanation in the commit message.
 
 ### Functions that don't work on Numbers or Arrays of Numbers
 
-Please don't write any.
+That's not what this library is for. Please don't write any.
 
 ## LICENSE
 

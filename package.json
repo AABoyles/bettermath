@@ -5,7 +5,6 @@
   "main": "bettermath.js",
   "scripts": {
     "test": "qunit -c bettermath.js -t test/tests.js",
-    "fix":  "fixmyjs bettermath.js",
     "lint": "jshint bettermath.js",
     "docs": "docco -c custom.css bettermath.js && mv docs/bettermath.html docs/index.html",
     "release": "uglifyjs bettermath.js -c -m -o bettermath.min.js"
@@ -23,7 +22,6 @@
   "dependencies": {},
   "devDependencies": {
     "docco": "^0.7.0",
-    "fixmyjs": "^1.0.3",
     "qunit": "^1.0.0",
     "uglify-es": "^3.0.4"
   }
