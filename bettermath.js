@@ -691,9 +691,9 @@
 
   //### factors
   // Returns an array of the factors of a number, n
-  math.factors = function(obj){
+  math.factors = function(obj, key){
     if(math.isArray(obj)){
-      obj.map(math.factors);
+      return math.pluck(obj, key).map(math.factors);
     }
     var result = [],
         startN = math.abs(math.round(obj)),
