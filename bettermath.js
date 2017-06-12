@@ -1,27 +1,13 @@
-// *`Math`, but Better.*
-//
-// bettermath is a browser- and node- compatible javascript module for a variety
-// of useful numerical computations on arrays of numbers.
+//## Helper Functions
+// To start, let's build out some simple functions which will be important
+// building blocks for our later functions.
 
 'use strict';
 
 (function(){
 
-  // If you're using it in the browser, you can access it from the `math`
-  // global ([sorry](http://wiki.c2.com/?GlobalVariablesAreBad)). (Note the
-  // lower-case 'm').
-
   var math = {};
 
-  // It you're working in [node](http://nodejs.com), you can `require` it into
-  // whatever you want.
-
-  // It's designed to work seamlessly as a mixin with the standard
-  // [`Math`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math)
-  // object. This should be [very safe to do](https://aaboyles.github.io/bettermath/test/mixindex.html),
-  // but if you have any problems doing so, please [let me know](https://github.com/AABoyles/bettermath/issues).)
-  // To preserve the original implementations of the functions in Math in case
-  // you do use it as a mixin, let's clone Math to `math.orig`.
   math.orig = {};
   Object.getOwnPropertyNames(Math).forEach((key) => {
     if(typeof Math[key] == "function"){
@@ -31,24 +17,20 @@
     }
   });
 
-  //## Helper Functions
-  // To start, let's build out some simple functions which will be important
-  // building blocks for our later functions.
-
-  //### isArray
+  //#### isArray
   // Determines if a given object is an array.
   math.isArray = function(obj){
     if(Array.isArray) return Array.isArray(obj);
     return obj.constructor === Array;
   };
 
-  //### isObject
+  //#### isObject
   // Determines if a given object is an object.
   math.isObject = function(obj){
     return obj === Object(obj);
   };
 
-  //### Pluck
+  //#### Pluck
   // Given a non-array, obj, returns obj.
   //
   // Given an array of numbers, returns the array of numbers.
@@ -80,8 +62,8 @@
   math.range = function(stop, start, step){
     start = start || 1;
     step = step || 1;
-    var length = math.max(math.ceil((stop - start) / step), 0);
-    var range = Array(length);
+    var length = math.max(math.ceil((stop - start) / step), 0),
+        range = Array(length);
     for (var idx = 0; idx < length; idx++, start += step){
       range[idx] = start;
     }
@@ -120,15 +102,15 @@
     return out;
   };
 
-  //## Randomizers
+  //### Randomizers
   // Randomizers provide sources of pseudo-randomly values. These are largely
-  // based on Math.random, which is not crpytographically secure. Accordingly,
-  // These should not be used for applications which secure random values.
+  // based on Math.random, which is not cryptographically secure. Accordingly,
+  // these should not be used for applications which secure random values.
 
-  //### random
+  //#### random
   // Returns a random value between 0 and 1.
   //
-  // Given a number n, returns an array of n random values.
+  // Given a number, `n`, returns an array of `n` random values between 0 and 1.
   math.random = function(n){
     if(!n) return math.orig.random();
     var out = Array(n);
@@ -138,10 +120,10 @@
     return out;
   };
 
-  //### randomBoolean
+  //#### randomBoolean
   // Returns a random boolean value.
   //
-  // Given a number n, returns an array of n random booleans.
+  // Given a number, `n`, returns an array of `n` random booleans.
   math.randomBoolean = function(n){
     if(!n) return math.orig.random() > 0.5 ? 1 : -1;
     var out = Array(n);
@@ -151,12 +133,12 @@
     return out;
   };
 
-  //### randomDirection
+  //#### randomDirection
   // AKA `randomSign`
   //
   // Returns one of [-1, 1]
   //
-  // Given a number n, returns an array of n random directions.
+  // Given a number, `n`, returns an array of `n` random directions.
   math.randomDirection = math.randomSign = function(n){
     if(!n) return math.orig.random() > 0.5 ? 1 : -1;
     var out = Array(n);
@@ -166,7 +148,7 @@
     return out;
   };
 
-  //### randomElement
+  //#### randomElement
   // AKA `randomItem`
   //
   // Given an array, return one element selected at random.
@@ -201,7 +183,7 @@
   // distinguished by the naming scheme is[Type] where [Type] is some
   // term that's meaningful to either Mathematics or Javascript.
 
-  //### isUndefined
+  //#### isUndefined
   // Determines if a given object is undefined.
   math.isUndefined = function(obj, key){
     if(math.isArray(obj)){
@@ -210,7 +192,7 @@
     return typeof obj === 'undefined';
   };
 
-  //### isNumber
+  //#### isNumber
   // Determines if a given object is a number
   math.isNumber = function(obj, key){
     if(math.isArray(obj)){
@@ -219,7 +201,7 @@
     return typeof obj === 'number';
   };
 
-  //### isNaN
+  //#### isNaN
   // Determines if a given object is [Not a Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN)
   math.isNaN = function(obj, key){
     if(math.isArray(obj)){
@@ -228,7 +210,7 @@
     return math.isNumber(obj) && obj !== +obj;
   };
 
-  //### isInteger
+  //#### isInteger
   // Determines if a given object is an integer
   math.isInteger = function(obj, key){
     if(math.isArray(obj)){
@@ -237,7 +219,7 @@
     return Number.isInteger(obj);
   };
 
-  //### isPositive
+  //#### isPositive
   // Determines whether a number is positive
   math.isPositive = function(obj, key){
     if(math.isArray(obj)){
@@ -246,7 +228,7 @@
     return obj > 0;
   };
 
-  //### isNegative
+  //#### isNegative
   // Determines whether a number is negative
   math.isNegative = function(obj, key){
     if(math.isArray(obj)){
@@ -255,43 +237,43 @@
     return obj < 0;
   };
 
-  //### isNonnegative
+  //#### isNonNegative
   // Determines whether a number is nonnegative
-  math.isNonnegative = function(obj, key){
+  math.isNonNegative = math.isNonnegative = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.isNonnegative);
     }
     return obj >= 0;
   };
 
-  //### isNonpositive
+  //#### isNonpositive
   // Determines whether a number is nonpositive
-  math.isNonpositive = function(obj, key){
+  math.isNonPositive = math.isNonpositive = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.isNonpositive);
     }
     return obj <= 0;
   };
 
-  //### isZero
+  //#### isZero
   // Determines whether a number is Zero
-  math.isZero = function(obj, key){
+  math.isZero = math.iszero = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.isZero);
     }
     return obj === 0;
   };
 
-  //### isNonzero
+  //#### isNonzero
   // Determines whether a number is nonzero
-  math.isNonzero = function(obj, key){
+  math.isNonZero = math.isNonzero = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.isNonzero);
     }
     return obj !== 0;
   };
 
-  //### isSameSign
+  //#### isSameSign
   // Compares the signs of two values
   math.isSameSign = function(obj, b){
     if(math.isArray(obj)){
@@ -300,7 +282,7 @@
     return (obj >= 0) !== (b < 0);
   };
 
-  //### isFinite
+  //#### isFinite
   // Determines whether a number is finite
   math.isFinite = function(obj, key){
     if(math.isArray(obj)){
@@ -309,7 +291,7 @@
     return Number.isFinite(obj);
   };
 
-  //### isInfinite
+  //#### isInfinite
   // Determines whether a number is positive
   math.isInfinite = function(obj, key){
     if(math.isArray(obj)){
@@ -318,7 +300,7 @@
     return !math.isFinite(obj);
   };
 
-  //### isEven
+  //#### isEven
   // Determines whether a number is even.
   math.isEven = function(obj, key){
     if(math.isArray(obj)){
@@ -327,7 +309,7 @@
     return obj % 2 === 0;
   };
 
-  //### isOdd
+  //#### isOdd
   // Determines whether a number is odd.
   math.isOdd = function(obj, key){
     if(math.isArray(obj)){
@@ -336,7 +318,7 @@
     return obj % 2 === 1;
   };
 
-  //### isPrime
+  //#### isPrime
   // Determines whether a number is prime.
   //
   // *Note* that for a numeric input, n, this is O(sqrt(n)). For arrays of size
@@ -346,13 +328,13 @@
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.isPrime);
     }
-    if (!obj){
+    if(!obj){
       return false;
-    } else if (obj !== 2){
+    } else if(obj !== 2){
       var safeN = math.abs(math.round(obj));
       var goUntil = math.ceil(math.sqrt(safeN));
       for (var i = 2; i <= goUntil; i++){
-        if (safeN % i === 0){
+        if(safeN % i === 0){
           return false;
         }
       }
@@ -360,7 +342,7 @@
     return true;
   };
 
-  //### isComposite
+  //#### isComposite
   // Determines whether a number is composite.
   math.isComposite = function(obj, key){
     if(math.isArray(obj)){
@@ -369,22 +351,22 @@
     return !math.isPrime(obj);
   };
 
-  //### isPerfect
+  //#### isPerfect
   // Determines whether a number is perfect.
   //
   // Because there are so few which can be represented as integers, it's vastly
   // more efficient to just store them all than attempt to compute and sum
   // factors or check for Eulerian forms.
+  math.perfects = [6, 28, 496, 8128, 33550336, 8589869056, 137438691328];
   math.isPerfect = function(obj, key){
     if(math.isArray(obj)){
-      return math.pluck(obj, key).map(math.isComposite);
+      return math.pluck(obj, key).map(math.isPerfect);
     }
-    var perfects = [6, 28, 496, 8128, 33550336, 8589869056, 137438691328];
-    return obj in perfects;
+    return obj in math.perfects;
   };
 
-  //### sign
-  // Returns one of [-1,0,1], indicating whether the given obj is negative,
+  //#### sign
+  // Returns one of -1, 0, or 1, indicating whether the given obj is negative,
   // zero, or positive
   math.sign = function(obj, key){
     if(math.isArray(obj)){
@@ -393,7 +375,7 @@
     return math.orig.sign(obj);
   };
 
-  //### floor
+  //#### floor
   // Returns the greatest integer less than a given value.
   math.floor = function(obj, key){
     if(math.isArray(obj)){
@@ -402,7 +384,7 @@
     return math.orig.floor(obj);
   };
 
-  //### ceil
+  //#### ceil
   // Returns the least integer greater than a given value.
   math.ceil = function(obj, key){
     if(math.isArray(obj)){
@@ -411,7 +393,7 @@
     return math.orig.ceil(obj);
   };
 
-  //### round
+  //#### round
   // Returns the nearest integer to a given value.
   math.round = function(obj, key){
     if(math.isArray(obj)){
@@ -420,18 +402,18 @@
     return math.orig.round(obj);
   };
 
-  //### clamp
+  //#### clamp
   // Returns the nearest value to a number within the range [lower, upper].
-  math.clamp = function(arr, lower, upper){
-    if(math.isArray(arr)){
-      return arr.map(i => math.clamp(i, lower, upper));
+  math.clamp = function(obj, lower, upper){
+    if(math.isArray(obj)){
+      return obj.map(i => math.clamp(i, lower, upper));
     }
-    if(arr < lower){ return lower; }
-    if(arr > upper){ return upper; }
-    return arr;
+    if(obj < lower){ return lower; }
+    if(obj > upper){ return upper; }
+    return obj;
   };
 
-  //### trunc
+  //#### trunc
   // Returns an integer with all digits less than one truncated.
   math.trunc = function(obj, key){
     if(math.isArray(obj)){
@@ -440,7 +422,7 @@
     return math.orig.trunc(obj);
   };
 
-  //### abs
+  //#### abs
   // Returns the absolute value of a number.
   math.abs = function(obj, key){
     if(math.isArray(obj)){
@@ -449,36 +431,36 @@
     return math.orig.abs(obj);
   };
 
-  //### add
+  //#### add
   // Adds a value to each element of an array.
-  math.add = function(arr, summand){
-    if(math.isArray(arr)){
-      return arr.map(i => math.add(i, summand));
+  math.add = function(obj, summand){
+    if(math.isArray(obj)){
+      return obj.map(i => math.add(i, summand));
     }
-    return arr + summand;
+    return obj + summand;
   };
 
-  //### subtract
+  //#### subtract
   // Subtracts a value from each element of an array.
-  math.subtract = function(arr, subtrahend){
-    if(math.isArray(arr)){
-      return arr.map(minuend => math.subtract(minuend, subtrahend));
+  math.subtract = function(obj, subtrahend){
+    if(math.isArray(obj)){
+      return obj.map(minuend => math.subtract(minuend, subtrahend));
     }
-    return arr - subtrahend;
+    return obj - subtrahend;
   };
 
-  //### multiply
+  //#### multiply
   // AKA `scale`
   //
   // Multiplies by a scalar.
-  math.multiply = math.scale = function(arr, scalar){
-    if(math.isArray(arr)){
-      return arr.map(i => math.scale(i, scalar))
+  math.multiply = math.scale = function(obj, scalar){
+    if(math.isArray(obj)){
+      return obj.map(i => math.scale(i, scalar));
     }
-    return arr * scalar;
+    return obj * scalar;
   };
 
-  //### scale01
+  //#### scale01
   // Transforms an array to fit within the range [0, 1], such that the
   // ratios between any two pairs of elements are maintained.
   //
@@ -488,7 +470,7 @@
     return math.scalemm(arr, 0, 1);
   };
 
-  //### scale11
+  //#### scale11
   // Transforms an array to fit within the range [-1, 1], such that the
   // ratios between any two pairs of elements are maintained.
   //
@@ -498,7 +480,7 @@
     return math.scalemm(arr, -1, 1);
   };
 
-  //### scale0100
+  //#### scale0100
   // Transforms an array to fit within the range [0, 100], such that the
   // ratios between any two pairs of elements are maintained.
   //
@@ -508,39 +490,39 @@
     return math.scalemm(arr, 0, 100);
   };
 
-  //### scalemm
+  //#### scalemm
   // Transforms an array to fit within the range [min, max], such that the
   // ratios between any two elements are maintained.
   //
   // `math.scalemm([0, 2, 5, 10])` &rArr; [-1, -0.6, 0, 1]
-  math.scalemm = math.scaleMM = function(arr, min, max){
+  math.scalemm = math.scaleMM = function(obj, min, max){
     if(math.isUndefined(min)) min = 0;
     if(math.isUndefined(max)) max = 1;
-    var minArr = math.min(arr);
-    var oldRange = math.max(arr) - minArr;
-    var newRange = max - min;
-    return arr.map(i => (i - minArr) / oldRange * newRange + min);
+    var minArr = math.min(obj),
+        oldRange = math.max(obj) - minArr,
+        newRange = max - min;
+    return obj.map(i => (i - minArr) / oldRange * newRange + min);
   };
 
-  //### divide
-  // Divides each element in arr by divisor.
-  math.divide = function(arr, divisor){
-    if(math.isArray(arr)){
-      return arr.map(dividend => math.divide(dividend, divisor))
+  //#### divide
+  // Divides each element in `obj` by `divisor`.
+  math.divide = function(obj, divisor){
+    if(math.isArray(obj)){
+      return obj.map(dividend => math.divide(dividend, divisor));
     }
-    return arr / divisor;
+    return obj / divisor;
   };
 
-  //### modulo
-  // Divides each element in arr by divisor, and returns the remainder.
-  math.modulo = function(arr, divisor){
-    if(math.isArray(arr)){
-      return arr.map(dividend => math.modulo(dividend, divisor))
+  //#### modulo
+  // Divides each element in `obj` by `divisor`, and returns the remainder.
+  math.modulo = function(obj, divisor){
+    if(math.isArray(obj)){
+      return obj.map(dividend => math.modulo(dividend, divisor));
     }
-    return arr % divisor;
+    return obj % divisor;
   };
 
-  //### pow
+  //#### pow
   // Given a number and an exponent, returns the number raised to the exponent.
   //
   // Given an array of numbers, along with an exponent, returns an array for
@@ -556,41 +538,41 @@
   // `math.pow(2,3)` &rArr; 8
   //
   // `math.pow([1, 2, 10], 3)` &rArr; [1, 8, 1000]
-  math.pow = function(obj, n){
+  math.pow = function(obj, exponent){
     if(math.isArray(obj)){
-      return obj.map(i => math.pow(i, n));
+      return obj.map(i => math.pow(i, exponent));
     }
-    return math.orig.pow(obj, n);
+    return math.orig.pow(obj, exponent);
   };
 
   // Note that the following functions will accept arrays of objects, where
   // math.pow will not.
 
-  //### square
+  //#### square
   // Multiplies a number by itself.
   math.square = function(obj, key){
     return math.pow(math.pluck(obj, key), 2);
   };
 
-  //### cube
+  //#### cube
   // Multiplies a number by its square.
   math.cube = function(obj, key){
     return math.pow(math.pluck(obj, key), 3);
   };
 
-  //### sqrt
+  //#### sqrt
   // Given a number, computes the Square Root
   math.sqrt = function(obj, key){
     return math.pow(math.pluck(obj, key), 1/2);
   };
 
-  //### cbrt
+  //#### cbrt
   // Given a number, computes the Cube Root
   math.cbrt = function(obj, key){
     return math.pow(math.pluck(obj, key), 1/3);
   };
 
-  //### exp
+  //#### exp
   // Given a number x, computes e^x where e is Euler's natural base.
   math.exp = function(obj, key){
     if(math.isArray(obj)){
@@ -599,7 +581,7 @@
     return math.pow(math.orig.E, obj);
   };
 
-  //### expm1
+  //#### expm1
   // Given a number x, computes e^x-1 where e is Euler's natural base.
   math.expm1 = function(obj, key){
     if(math.isArray(obj)){
@@ -608,7 +590,7 @@
     return math.pow(math.orig.E, obj) - 1;
   };
 
-  //### log
+  //#### log
   // Computes the natural logarithm of a number.
   math.log = math.ln = function(obj, key){
     if(math.isArray(obj)){
@@ -617,7 +599,7 @@
     return math.orig.log(obj);
   };
 
-  //### log1p
+  //#### log1p
   // Given a number x, computes the natural logarithm of x + 1
   math.log1p = math.ln1p = function(obj, key){
     if(math.isArray(obj)){
@@ -626,7 +608,7 @@
     return math.log(1 + obj);
   };
 
-  //### log10
+  //#### log10
   // Computes the logarithm base 10 of a number.
   math.log10 = function(obj, key){
     if(math.isArray(obj)){
@@ -635,7 +617,7 @@
     return math.orig.log10(obj);
   };
 
-  //### log2
+  //#### log2
   // Computes the logarithm base 2 of a number.
   math.log2 = math.lg = function(obj, key){
     if(math.isArray(obj)){
@@ -644,7 +626,7 @@
     return math.orig.log2(obj);
   };
 
-  //### logb
+  //#### logb
   // Computes the logarithm base b of an object (or each element within it)
   math.logb = function(obj, base){
     var b = math.log(base);
@@ -655,41 +637,43 @@
     return math.log(obj)/b;
   };
 
-  //### factorial
+  //#### factorial
   // Given a number, computes the factorial.
   math.factorial = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.factorial);
     }
-    if (obj < 0){
+    if(obj < 0){
       return Infinity;
-    } else if (obj === 0){
+    } else if(obj === 0){
       return 1;
     } else {
       return math.product(math.range(obj));
     }
   };
 
-  //### copySign
-  // Copies the sign of y onto x
-  math.copySign = function(obj, b){
+  //#### copySign
+  // Given a number, copies the sign of b onto obj
+  //
+  // Given an Array, copies the sign of b onto each value of obj
+  math.copySign = math.copysign = function(obj, b){
     if(math.isArray(obj)){
-      return obj.map(i => math.copysign(i, b));
+      return obj.map(i => math.copySign(i, b));
     }
     return math.isSameSign(obj, b) ? obj : -obj;
   };
 
-  //### undirectedEdges
+  //#### undirectedEdges
   // Computes the maximum number of distinct edges of an undirected graph of `n`
   // nodes.
-  math.undirectedEdges = function(obj, key){
+  math.undirectedEdges = math.undirectededges = function(obj, key){
     if(math.isArray(obj)){
       return math.pluck(obj, key).map(math.undirectedEdges);
     }
     return obj * (obj - 1) / 2;
   };
 
-  //### factors
+  //#### factors
   // Returns an array of the factors of a number, n
   math.factors = function(obj, key){
     if(math.isArray(obj)){
@@ -701,7 +685,7 @@
     while(!finished){
       finished = true;
       for (var i = 2; i <= startN / 2; i++){
-        if (obj % i === 0){
+        if(obj % i === 0){
           obj /= i;
           result.push(i);
           finished = false;
@@ -709,20 +693,20 @@
         }
       }
     }
-    if (result.length === 0){
+    if(result.length === 0){
       result.push(startN);
     }
     return result;
   };
 
-  //### divisors
+  //#### divisors
   // Returns an array of the divisors of a number n
-  math.divisors = function(obj){
+  math.divisors = function(obj, key){
     if(math.isArray(obj)){
-      return obj.map(math.divisors);
+      return math.pluck(obj, key).map(math.divisors);
     }
-    var safeN = math.abs(math.round(obj));
-    var result = [1];
+    var safeN = math.abs(math.round(obj)),
+        result = [1];
     for(var i = 2; i <= safeN / 2; i++){
       if(safeN % i === 0){
         result.push(i);
@@ -731,7 +715,7 @@
     return result;
   };
 
-  //### between
+  //#### between
   // Returns a boolean indicating whether a number x is between two others
   // numbers, a and b.
   math.between = function (obj, a, b){
@@ -741,7 +725,7 @@
     return (a<=obj && obj<=b) || (b<=obj && obj<=a);
   };
 
-  //### format
+  //#### format
   // Truncates a number n at the given precision
   //
   // `var t = math.pluck([{a:1.234}, {a:2.345}], 'a'); math.format(t, 2);` &rArr;
@@ -752,7 +736,7 @@
     return (obj.toFixed(precision))/1;
   };
 
-  //### sort
+  //#### sort
   // Given an array of numbers, returns the array sorted.
   //
   // *Warning:* This implements an in-place algorithm.
@@ -766,14 +750,11 @@
     }
   };
 
-  //### shuffle
+  //#### shuffle
   // Returns a shuffled array.
-  //
-  // *Warning:* This implements [Fisher-Yates Shuffling](http://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle),
-  // which is an an in-place algorithm.
   math.shuffle = function(obj, key){
-    var arr = math.pluck(obj, key);
-    var m = arr.length, t, i;
+    var arr = math.pluck(obj, key),
+        m = arr.length, t, i;
     while (m){
       i = math.floor(math.random() * m--);
       t = arr[m];
@@ -783,23 +764,22 @@
     return arr;
   };
 
-  //### Trigonometry
+  //#### Trigonometry
   // Performs trigonometric computations.
   ['sin', 'sinh', 'cos', 'cosh', 'tan', 'tanh', 'acos', 'acosh', 'asin', 'asinh', 'atan', 'atanh'].forEach(fun => {
     math[fun] = function(obj, key){
       if(math.isArray(obj)){
-        var arr = math.pluck(obj, key);
-        return arr.map(i => math[fun](i));
+        return math.pluck(obj, key).map(i => math[fun](i));
       }
       return math.orig[fun](obj);
     };
   });
 
-  math.atan2 = function(arr, b){
-    return math.atan(math.divide(arr, b));
+  math.atan2 = function(obj, divisor){
+    return math.atan(math.divide(obj, divisor));
   };
 
-  //### zScore
+  //#### zScore
   // Computes the standard Z-score, *assuming a normal distribution.*
   //
   // `math.zScore([1,2,3])` &rArr; [-1.224744871391589, 0, 1.224744871391589]
@@ -819,7 +799,7 @@
   // known, simple reducers (as you can see from the list of functions between
   // this paragraph and `math.mean`).
 
-  //### min
+  //#### min
   // Computes the maximum of an array of numbers
   //
   //`math.maxArr([1,2,3]);` &rArr; 3
@@ -830,7 +810,7 @@
     return math.orig.min(...math.pluck(obj, key));
   };
 
-  //### max
+  //#### max
   // Computes the maximum of an array of numbers
   //
   //`math.maxArr([1,2,3]);` &rArr; 3
@@ -841,7 +821,7 @@
     return math.orig.max(...math.pluck(obj, key));
   };
 
-  //### sum
+  //#### sum
   // Computes the sum of an array of numbers (or an array of objects with a
   // given `key`).
   //
@@ -852,7 +832,7 @@
     return math.pluck(obj, key).reduce((a, b) => a + b, 0);
   };
 
-  //### product
+  //#### product
   // Computes the product of an array of numbers (or an array of objects with a
   // a given `key`).
   //
@@ -863,13 +843,7 @@
     return math.pluck(obj, key).reduce((a, b) => a * b, 1);
   };
 
-  // If you're curions, there's no implementation of difference or quotient
-  // because subraction and division are non-commutative, which makes them
-  // (modestly) difficult to reason about in a sufficiently general way.
-  // Accordingly, it seems better that someone who needs such a function
-  // actually implement the logic themselves.
-
-  //### gcd
+  //#### gcd
   // Determines the greatest common divisor between two numbers.
   math.gcd = function(obj, b){
     if(math.isArray(obj)){
@@ -884,7 +858,7 @@
     return obj;
   };
 
-  //### lcm
+  //#### lcm
   // Determines the least common multiple of two numbers.
   math.lcm = function(obj, b){
     if(math.isArray(obj)){
@@ -893,7 +867,7 @@
     return obj / math.gcd(obj, b) * b;
   };
 
-  //### mean
+  //#### mean
   // Given an array of numbers, returns
   // the [arithmetic mean](https://en.wikipedia.org/wiki/Arithmetic_mean).
   //
@@ -903,77 +877,74 @@
     return math.sum(arr) / arr.length;
   };
 
-  //### median
+  //#### median
   // Given an array of numbers, returns
   // the [median](https://en.wikipedia.org/wiki/Median).
   //
   // `math.median([1,2,3,4])` &rArr; 2.5
   math.median = function(obj, key){
-    var arr = math.pluck(obj, key);
-    var middle = (arr.length + 1) /2;
-    var sorted = math.sort(arr.slice());
+    var arr = math.pluck(obj, key),
+        middle = (arr.length + 1) / 2,
+        sorted = math.sort(arr);
     return (sorted.length % 2) ? sorted[middle - 1] : (sorted[middle - 1.5] + sorted[middle - 0.5]) / 2;
   };
 
-  //### modes
+  //#### modes
   // Returns an array of the most frequently recurring value in the input array.
   math.mode = math.modes = function(obj, key){
-    var arr = math.pluck(obj, key);
-
-    if (!arr.length) return [];
-
-    var modeMap = {},
+    var arr = math.pluck(obj, key),
+        modeMap = {},
         maxCount = 0,
         modes = [];
 
     arr.forEach(val => {
-      if (!modeMap[val]){
+      if(!modeMap[val]){
         modeMap[val] = 1;
       } else {
         modeMap[val]++;
       }
-      if (modeMap[val] > maxCount){
+      if(modeMap[val] > maxCount){
         modes = [val];
         maxCount = modeMap[val];
-      } else if (modeMap[val] === maxCount){
+      } else if(modeMap[val] === maxCount){
         modes.push(val);
       }
     });
     return modes;
   };
 
-  //### geometricMean
+  //#### geometricMean
   // Given an array of numbers, returns
   // the [geometric mean](https://en.wikipedia.org/wiki/Geometric_mean).
   //
   // `math.geometricMean([3,9,27])` &rArr; 9
   math.geometricMean = function(obj, key){
     var arr = math.pluck(obj, key);
-    return math.pow(math.product(arr),1/arr.length);
+    return math.pow(math.product(arr), 1 / arr.length);
   };
 
-  //### midrange
+  //#### midrange
   // Given an array of numbers, returns the [midrange]() (the mean of the max
   // and min of a set of numbers).
   //
   // `math.midrange([3,9,27])` &rArr; 18
   math.midrange = math.midRange = function(obj, key){
-    var arr = math.pluck(obj, key);
-    var min = math.min(arr);
+    var arr = math.pluck(obj, key),
+        min = math.min(arr);
     return ((math.max(arr) - min) / 2) + min;
   };
 
-  //### Variance
+  //#### Variance
   // Computes the variance of an array of numbers.
   //
   // `math.variance([1,2,3])` &rArr; 2/3
   math.variance = function(obj, key){
-    var arr = math.pluck(obj, key);
-    var mean = math.mean(arr);
+    var arr = math.pluck(obj, key),
+        mean = math.mean(arr);
     return math.mean(arr.map(x => math.pow(x - mean, 2)));
   };
 
-  //### stdDeviation
+  //#### stdDeviation
   // Computes the Standard Deviation of an array of numbers.
   //
   // `math.stdDeviation([1,2,3])` &rArr; 0.8165...
@@ -981,7 +952,7 @@
     return math.sqrt(math.variance(math.pluck(obj, key)));
   };
 
-  //### meanAbsoluteDeviation
+  //#### meanAbsoluteDeviation
   // Computes the mean absolute deviation of an array of numbers.
   //
   // `math.meanAbsoluteDeviation([1,2,3])` &rArr; 1
@@ -991,7 +962,7 @@
     return math.mean(arr.map(n => math.abs(n - mean)));
   };
 
-  //### hypot
+  //#### hypot
   // AKA `rss` for "Root sum of squares"
   //
   // Given any number of numbers (in an array or given as arbitrary arguments).
@@ -1008,7 +979,7 @@
     return math.orig.hypot(obj, key, ...others);
   };
 
-  //### wilson
+  //#### wilson
   // Given an array of boolean values and a Z-score, returns the
   // [Wilson Score Interval](http://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval#Wilson_score_interval)
   //
@@ -1023,25 +994,25 @@
     return (avg + z2/(2*total) - z*math.sqrt((avg*(1 - avg) + z2/(4*total))/total))/(1 + z2/total);
   };
 
-  //### movingAvg
+  //#### movingAverage
   // Computes a moving average of an array of numbers.
   //
   // In case this is non-obvious, this should return an array of fewer elements
   // than the original array contained.
   //
   // `math.movingAvg([1,2,3,4,5], 3)` &rArr; [2,3,4]
-  math.movingAvg = function(arr, size){
-    var win, i, newarr = [];
-    for(i = size - 1; i <= arr.length; i++){
-      win = arr.slice(i - size, i);
-      if (win.length === size){
+  math.movingAverage = math.movingaverage = math.movingAvg = function(obj, size){
+    var win, newarr = [];
+    for(var i = size - 1; i <= obj.length; i++){
+      win = obj.slice(i - size, i);
+      if(win.length === size){
         newarr.push(math.mean(win));
       }
     }
     return newarr;
   };
 
-  //That's all, folks!
+  //### Fin
 
   if(typeof exports !== 'undefined'){
     if(typeof module !== 'undefined' && module.exports){
