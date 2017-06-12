@@ -170,8 +170,9 @@
   // AKA `randomItem`
   //
   // Given an array, return one element selected at random.
-  math.randomElement = math.randomItem = function(arr){
-    return arr[math.floor(math.random()*arr.length)];
+  math.randomElement = math.randomItem = function(obj, key){
+    if(key) return math.randomElement(math.pluck(obj, key));
+    return obj[math.floor(math.random() * obj.length)];
   };
 
   //## Mappers
