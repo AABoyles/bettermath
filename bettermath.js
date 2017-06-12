@@ -425,7 +425,7 @@
   // Returns an integer with all digits less than one truncated.
   math.trunc = function(obj, key){
     if(math.isArray(obj)){
-      return math.pluck(obj, key).map(trunc);
+      return math.pluck(obj, key).map(math.trunc);
     }
     return math.orig.trunc(obj);
   };
