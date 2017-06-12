@@ -175,6 +175,15 @@
     return obj[math.floor(math.random() * obj.length)];
   };
 
+  //#### randomSample
+  //
+  // Given an array, `obj`, and a number, `m`, returns `m` randomly-selected
+  // elements of `obj`.
+  math.randomSample = math.randomsample = function(obj, m){
+    if(!m || m > obj.length) return obj;
+    return math.shuffle(obj).slice(0, m);
+  };
+
   //## Mappers
   // Mapper functions accept a single argument (which may be an array of numbers
   // or objects), and return an object of roughly similar type and size.
