@@ -60,13 +60,14 @@
     if(math.isArray(obj)){
       if(math.isObject(obj[0])){
         key = key || 'value';
-        arr = obj.map(i => i[key]);
+        return arr.map(i => i[key]);
       }
+      return arr.slice();
     }
     return arr;
   };
 
-  //### range
+  //#### range
   // Given a number, s, range returns an array of integers between 1 and s
   // (inclusive).
   //
