@@ -295,7 +295,7 @@
   // Compares the signs of two values
   math.isSameSign = function(obj, b){
     if(math.isArray(obj)){
-      return obj.map(i => math.sameSign(i, b));
+      return obj.map(i => math.isSameSign(i, b));
     }
     return (obj >= 0) !== (b < 0);
   };
@@ -676,7 +676,7 @@
     if(math.isArray(obj)){
       return obj.map(i => math.copysign(i, b));
     }
-    return math.samesign(obj, b) ? obj : -obj;
+    return math.isSameSign(obj, b) ? obj : -obj;
   };
 
   //### undirectedEdges
