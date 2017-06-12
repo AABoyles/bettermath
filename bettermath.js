@@ -88,25 +88,36 @@
     return range;
   };
 
-  //### repeat
-  // Given a number, returns an array of length
+  //#### repeat
+  // Given an array, `obj`, and a number, `times`, returns an array which
+  // repeats `obj` `times` times.
   //
-  // Note: This is an implementation of R's [`rep`](https://stat.ethz.ch/R-manual/R-devel/library/base/html/rep.html) function.
-  math.repeat = function(arr, times, each) {
-    if(!math.isArray(arr)){ arr = [arr]; }
-    if(!times){ return arr; }
-    if(!each){ each = 1; }
-    var temp = Array(each * arr.length);
-    arr.forEach(function(el, i){
-      for(j = 0; j < each; j++){
-        temp[i * each + j] = el;
+  // `math.repeat([1,2,3], 2)` &rArr; [1,2,3,1,2,3]
+  math.repeat = function(obj, times){
+    if(!math.isArray(obj)){ obj = [obj]; }
+    if(!times){ return obj; }
+    var out = [];
+    for(var i = 0; i < times; i++){
+      out = out.concat(obj);
+    }
+    return out;
+  };
+
+  //#### repeatEach
+  // Given an array, `arr`, and a number, `each`, returns an array which
+  // repeats each value of `arr` `each` times.
+  //
+  // `math.repeatEach([1,2,3], 2)` &rArr; [1,1,2,2,3,3]
+  math.repeatEach = function(obj, each){
+    if(!math.isArray(obj)){ obj = [obj]; }
+    each = each || 1;
+    var out = Array(each * obj.length);
+    obj.forEach(function(el, i){
+      for(var j = 0; j < each; j++){
+        out[i * each + j] = el;
       }
     });
-    ret = temp;
-    for(i = 1; i < times; i++){
-      ret = ret.concat(temp);
-    }
-    return ret;
+    return out;
   };
 
   //## Randomizers
