@@ -1,7 +1,3 @@
-//## Helper Functions
-// To start, let's build out some simple functions which will be important
-// building blocks for our later functions.
-
 'use strict';
 
 (function(){
@@ -17,6 +13,10 @@
     }
   });
 
+  //## Helpers
+  // To start, let's build out some simple functions which will be important
+  // building blocks for our later functions.
+
   //#### isArray
   // Determines if a given object is an array.
   math.isArray = function(obj){
@@ -30,13 +30,13 @@
     return obj === Object(obj);
   };
 
-  //#### Pluck
-  // Given a non-array, obj, returns obj.
+  //#### pluck
+  // Given a non-array, `obj`, returns `obj`.
   //
   // Given an array of numbers, returns the array of numbers.
   //
   // Given an array of objects and a string, 'key', returns an array of whatever
-  // was mapped to key in each element of the array.
+  // was mapped to `key` in each object of the array.
   math.pluck = function(obj, key){
     var arr = obj;
     if(math.isArray(obj)){
@@ -50,15 +50,15 @@
   };
 
   //#### range
-  // Given a number, s, range returns an array of integers between 1 and s
+  // Given a number, `s`, range returns an array of integers between 1 and `s`
   // (inclusive).
   //
-  // Given two numbers s and t, range returns an array of integers between t and
-  // s (inclusive).
+  // Given two numbers, `s` and `t`, range returns an array of integers between
+  // `t` and `s` (inclusive).
   //
-  // Given three numders s, t, and i, range returns an array of integers between
-  // t and s + i - 1 (inclusive) such that the difference between each element
-  // in the output array is exactly i.
+  // Given three numders `s`, `t`, and `i`, range returns an array of integers
+  // between `t` and `s + i - 1` (inclusive) such that the difference between
+  // each element in the output array is exactly `i`.
   math.range = function(stop, start, step){
     start = start || 1;
     step = step || 1;
@@ -74,7 +74,9 @@
   // Given an array, `obj`, and a number, `times`, returns an array which
   // repeats `obj` `times` times.
   //
-  // `math.repeat([1,2,3], 2)` &rArr; [1,2,3,1,2,3]
+  // `math.repeat([1,2,3], 2)`
+  //
+  // &rArr; `[1, 2, 3, 1, 2, 3]`
   math.repeat = function(obj, times){
     if(!math.isArray(obj)){ obj = [obj]; }
     if(!times){ return obj; }
@@ -86,10 +88,12 @@
   };
 
   //#### repeatEach
-  // Given an array, `arr`, and a number, `each`, returns an array which
-  // repeats each value of `arr` `each` times.
+  // Given an array, `obj`, and a number, `each`, returns an array which
+  // repeats each value of `obj` `each` times.
   //
-  // `math.repeatEach([1,2,3], 2)` &rArr; [1,1,2,2,3,3]
+  // `math.repeatEach([1,2,3], 2)`
+  //
+  // &rArr; `[1, 1, 2, 2, 3, 3]`
   math.repeatEach = function(obj, each){
     if(!math.isArray(obj)){ obj = [obj]; }
     each = each || 1;
@@ -102,82 +106,7 @@
     return out;
   };
 
-  //### Randomizers
-  // Randomizers provide sources of pseudo-randomly values. These are largely
-  // based on Math.random, which is not cryptographically secure. Accordingly,
-  // these should not be used for applications which secure random values.
-
-  //#### random
-  // Returns a random value between 0 and 1.
-  //
-  // Given a number, `n`, returns an array of `n` random values between 0 and 1.
-  math.random = function(n){
-    if(!n) return math.orig.random();
-    var out = Array(n);
-    for(var i = 0; i < n; i++){
-      out[i] = math.random();
-    }
-    return out;
-  };
-
-  //#### randomBoolean
-  // Returns a random boolean value.
-  //
-  // Given a number, `n`, returns an array of `n` random booleans.
-  math.randomBoolean = function(n){
-    if(!n) return math.orig.random() > 0.5 ? 1 : -1;
-    var out = Array(n);
-    for(var i = 0; i < n; i++){
-      out[i] = math.randomBoolean();
-    }
-    return out;
-  };
-
-  //#### randomDirection
-  // AKA `randomSign`
-  //
-  // Returns one of [-1, 1]
-  //
-  // Given a number, `n`, returns an array of `n` random directions.
-  math.randomDirection = math.randomSign = function(n){
-    if(!n) return math.orig.random() > 0.5 ? 1 : -1;
-    var out = Array(n);
-    for(var i = 0; i < n; i++){
-      out[i] = math.randomDirection();
-    }
-    return out;
-  };
-
-  //#### randomElement
-  // AKA `randomItem`
-  //
-  // Given an array, return one element selected at random.
-  math.randomElement = math.randomItem = function(obj, key){
-    if(key) return math.randomElement(math.pluck(obj, key));
-    return obj[math.floor(math.random() * obj.length)];
-  };
-
-  //#### randomSample
-  //
-  // Given an array, `obj`, and a number, `m`, returns `m` randomly-selected
-  // elements of `obj`.
-  math.randomSample = math.randomsample = function(obj, m){
-    if(!m || m > obj.length) return obj;
-    return math.shuffle(obj).slice(0, m);
-  };
-
-  //## Mappers
-  // Mapper functions accept a single argument (which may be an array of numbers
-  // or objects), and return an object of roughly similar type and size.
-  // For example, passing a number to a mapper should result in a number.
-  // Passing an array of `n` numbers should (in most cases) return an array of
-  // `n` numbers.
-  //
-  // Note that these will also generally work with arrays of objects, provided
-  // you pass a 'key' argument indicating the key in the object which you wish
-  // to operate on.
-
-  //### Identifiers
+  //## Identifiers
   // This is a special class of mappers which return boolean variables,
   // identifying if a given number meets a defined criterion. They are
   // distinguished by the naming scheme is[Type] where [Type] is some
@@ -364,6 +293,97 @@
     }
     return obj in math.perfects;
   };
+
+  //## Randomizers
+  // Randomizers provide sources of pseudo-randomly values. These are largely
+  // based on Math.random, which is not cryptographically secure. Accordingly,
+  // these should not be used for applications which require secure random
+  // values.
+
+  //#### random
+  // Returns a random value between 0 and 1.
+  //
+  // Given a number, `n`, returns an array of `n` random values between 0 and 1.
+  math.random = function(n){
+    if(!n) return math.orig.random();
+    var out = Array(n);
+    for(var i = 0; i < n; i++){
+      out[i] = math.random();
+    }
+    return out;
+  };
+
+  //#### randomBoolean
+  // Returns a random boolean value.
+  //
+  // Given a number, `n`, returns an array of `n` random booleans.
+  math.randomBoolean = function(n){
+    if(!n) return math.orig.random() > 0.5 ? 1 : -1;
+    var out = Array(n);
+    for(var i = 0; i < n; i++){
+      out[i] = math.randomBoolean();
+    }
+    return out;
+  };
+
+  //#### randomDirection
+  // AKA `randomSign`
+  //
+  // Returns a random direction (i.e. 1 or -1)
+  //
+  // Given a number, `n`, returns an array of `n` random directions.
+  math.randomDirection = math.randomSign = function(n){
+    if(!n) return math.orig.random() > 0.5 ? 1 : -1;
+    var out = Array(n);
+    for(var i = 0; i < n; i++){
+      out[i] = math.randomDirection();
+    }
+    return out;
+  };
+
+  //#### randomElement
+  // AKA `randomItem`
+  //
+  // Given an array, return one element selected at random.
+  math.randomElement = math.randomItem = function(obj, key){
+    if(key) return math.randomElement(math.pluck(obj, key));
+    return obj[math.floor(math.random() * obj.length)];
+  };
+
+  //#### randomSample
+  //
+  // Given an array, `obj`, and a number, `m`, returns `m` randomly-selected
+  // elements of `obj`.
+  math.randomSample = math.randomsample = function(obj, m){
+    if(!m || m > obj.length) return obj;
+    return math.shuffle(obj).slice(0, m);
+  };
+
+  //#### shuffle
+  // Given an array, `obj`, returns an array which contains every element of
+  // `obj`, but in a random order.
+  math.shuffle = function(obj, key){
+    var arr = math.pluck(obj, key),
+        m = arr.length, t, i;
+    while (m){
+      i = math.floor(math.random() * m--);
+      t = arr[m];
+      arr[m] = arr[i];
+      arr[i] = t;
+    }
+    return arr;
+  };
+
+  //## Mappers
+  // Mapper functions accept a single argument (which may be an array of numbers
+  // or objects), and return an object of roughly similar type and size.
+  // For example, passing a number to a mapper should result in a number.
+  // Passing an array of `n` numbers should (in most cases) return an array of
+  // `n` numbers.
+  //
+  // Note that these will also generally work with arrays of objects, provided
+  // you pass a 'key' argument indicating the key in the object which you wish
+  // to operate on.
 
   //#### sign
   // Returns one of -1, 0, or 1, indicating whether the given obj is negative,
@@ -631,7 +651,6 @@
   math.logb = function(obj, base){
     var b = math.log(base);
     if(math.isArray(obj)){
-      //I know, this breaks the design pattern, but it saves `n` operations.
       return obj.map(x => math.log(x)/b);
     }
     return math.log(obj)/b;
@@ -728,7 +747,9 @@
   //#### format
   // Truncates a number n at the given precision
   //
-  // `var t = math.pluck([{a:1.234}, {a:2.345}], 'a'); math.format(t, 2);` &rArr;
+  // `math.format([1.234, 2.345], 2)`
+  //
+  // &rArr; `[1.2, 2.3]`
   math.format = function(obj, precision){
     if(math.isArray(obj)){
       return obj.map(i => math.format(i, precision));
@@ -750,21 +771,18 @@
     }
   };
 
-  //#### shuffle
-  // Returns a shuffled array.
-  math.shuffle = function(obj, key){
+  //#### zScore
+  // Computes the standard Z-score, *assuming a normal distribution.*
+  //
+  // `math.zScore([1,2,3])` &rArr; [-1.224744871391589, 0, 1.224744871391589]
+  math.zScore = math.zscore = function(obj, key){
     var arr = math.pluck(obj, key),
-        m = arr.length, t, i;
-    while (m){
-      i = math.floor(math.random() * m--);
-      t = arr[m];
-      arr[m] = arr[i];
-      arr[i] = t;
-    }
-    return arr;
+        mean = math.mean(arr),
+        sigma = math.stdDeviation(arr);
+    return arr.map(d => (d-mean)/sigma);
   };
 
-  //#### Trigonometry
+  //## Trigonometry
   // Performs trigonometric computations.
   ['sin', 'sinh', 'cos', 'cosh', 'tan', 'tanh', 'acos', 'acosh', 'asin', 'asinh', 'atan', 'atanh'].forEach(fun => {
     math[fun] = function(obj, key){
@@ -775,19 +793,11 @@
     };
   });
 
+  //#### atan2
+  // Returns the arctangent of the quotient of each element of `obj` and
+  // `divisor`
   math.atan2 = function(obj, divisor){
     return math.atan(math.divide(obj, divisor));
-  };
-
-  //#### zScore
-  // Computes the standard Z-score, *assuming a normal distribution.*
-  //
-  // `math.zScore([1,2,3])` &rArr; [-1.224744871391589, 0, 1.224744871391589]
-  math.zScore = math.zscore = function(obj, key){
-    var arr = math.pluck(obj, key),
-        mean = math.mean(arr),
-        sigma = math.stdDeviation(arr);
-    return arr.map(d => (d-mean)/sigma);
   };
 
   //## Reducers
@@ -802,7 +812,7 @@
   //#### min
   // Computes the maximum of an array of numbers
   //
-  //`math.maxArr([1,2,3]);` &rArr; 3
+  //`math.maxArr([1,2,3])` &rArr; 3
   math.min = function(obj, key, ...others){
     if(!math.isArray(obj)){
       return math.orig.min(obj, key, ...others);
@@ -813,7 +823,7 @@
   //#### max
   // Computes the maximum of an array of numbers
   //
-  //`math.maxArr([1,2,3]);` &rArr; 3
+  //`math.maxArr([1,2,3])` &rArr; 3
   math.max = function(obj, key, ...others){
     if(!math.isArray(obj)){
       return math.orig.max(obj, key, ...others);
@@ -825,7 +835,7 @@
   // Computes the sum of an array of numbers (or an array of objects with a
   // given `key`).
   //
-  //`math.sum([1,2,3]);` &rArr; 6
+  //`math.sum([1,2,3])` &rArr; 6
   //
   //`math.sum([{b: 4},{b: 5},{b: 6}], 'b')` &rArr; 15
   math.sum = function(obj, key){

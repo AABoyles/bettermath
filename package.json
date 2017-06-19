@@ -1,13 +1,14 @@
 {
   "name": "bettermath",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Basic Mathematical Operations for Arrays in Javascript",
   "main": "bettermath.js",
   "scripts": {
     "test": "qunit -c bettermath.js -t test/tests.js",
     "lint": "jshint bettermath.js",
-    "docs": "docco -c custom.css bettermath.js && mv docs/bettermath.html docs/index.html",
-    "release": "uglifyjs bettermath.js -c -m -o bettermath.min.js"
+    "docs": "docco -t node_modules/tonys-cool-docco-theme/dist/docco.jst -c node_modules/tonys-cool-docco-theme/dist/docco.css -o docs/ bettermath.js && mv docs/bettermath.html docs/index.html",
+    "release": "uglifyjs bettermath.js -c -m -o bettermath.min.js",
+    "all": "npm run docs && npm run release"
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,7 @@
   "devDependencies": {
     "docco": "^0.7.0",
     "qunit": "^1.0.0",
+    "tonys-cool-docco-theme": "git+https://github.com/AABoyles/Tonys-cool-docco-theme.git",
     "uglify-es": "^3.0.4"
   }
 }
