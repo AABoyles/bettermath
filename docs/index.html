@@ -428,6 +428,16 @@
               
                 
                   <li>
+                    <a href="#toprecision">toPrecision</a>
+                  </li>
+                
+                
+              
+            
+              
+              
+                
+                  <li>
                     <a href="#clamp">clamp</a>
                   </li>
                 
@@ -1498,6 +1508,19 @@ zero, or positive</p>
       <span class="hljs-keyword">return</span> math.pluck(obj, key).map(math.round);
     }
     <span class="hljs-keyword">return</span> math.orig.round(obj);
+  };</pre></div>
+          
+        
+          <h4 id="toprecision">toPrecision</h4>
+<p>Returns a number rounded to the specified precision (a la <a href="http://php.net/manual/en/function.round.php">PHP</a>)</p>
+
+          
+            <div class='highlight'><pre>  math.toPrecision = math.roundToPrecision = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, precision</span>)</span>{
+    <span class="hljs-keyword">if</span>(math.isArray(obj)){
+      <span class="hljs-keyword">return</span> obj.map(math.toPrecision);
+    }
+    <span class="hljs-keyword">var</span> factor = math.pow(<span class="hljs-number">10</span>, precision);
+    <span class="hljs-keyword">return</span> math.round(obj * factor) / factor;
   };</pre></div>
           
         

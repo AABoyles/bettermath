@@ -422,6 +422,16 @@
     return math.orig.round(obj);
   };
 
+  //#### toPrecision
+  // Returns a number rounded to the specified precision (a la [PHP](http://php.net/manual/en/function.round.php))
+  math.toPrecision = math.roundToPrecision = function(obj, precision){
+    if(math.isArray(obj)){
+      return obj.map(math.toPrecision);
+    }
+    var factor = math.pow(10, precision);
+    return math.round(obj * factor) / factor;
+  };
+
   //#### clamp
   // Returns the nearest value to a number within the range [lower, upper].
   math.clamp = function(obj, lower, upper){
