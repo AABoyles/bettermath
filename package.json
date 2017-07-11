@@ -1,6 +1,6 @@
 {
   "name": "bettermath",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Basic Mathematical Operations for Arrays in Javascript",
   "main": "bettermath.js",
   "scripts": {
