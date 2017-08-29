@@ -292,10 +292,23 @@
               
                 
                   <li>
+                    <a href="#ispoweroftwo">isPowerOfTwo</a>
+                  </li>
+                
+                
+              
+            
+              
+              
+                
+                  <li>
                     <a href="#isperfect">isPerfect</a>
                   </li>
                 
                 
+              
+            
+              
               
             
               
@@ -691,6 +704,26 @@
               
                 
                   <li>
+                    <a href="#permute">permute</a>
+                  </li>
+                
+                
+              
+            
+              
+              
+                
+                  <li>
+                    <a href="#choose">choose</a>
+                  </li>
+                
+                
+              
+            
+              
+              
+                
+                  <li>
                     <a href="#copysign">copySign</a>
                   </li>
                 
@@ -1002,9 +1035,9 @@
   math.orig = {};
   <span class="hljs-built_in">Object</span>.getOwnPropertyNames(<span class="hljs-built_in">Math</span>).forEach(<span class="hljs-function">(<span class="hljs-params">key</span>) =&gt;</span> {
     <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> <span class="hljs-built_in">Math</span>[key] == <span class="hljs-string">"function"</span>){
-      <span class="hljs-keyword">return</span> math.orig[key] = <span class="hljs-built_in">Math</span>[key].bind({});
+      math.orig[key] = <span class="hljs-built_in">Math</span>[key].bind({});
     } <span class="hljs-keyword">else</span> {
-      <span class="hljs-keyword">return</span> math.orig[key] = <span class="hljs-built_in">Math</span>[key];
+      math.orig[key] = <span class="hljs-built_in">Math</span>[key];
     }
   });</pre></div>
           
@@ -1340,6 +1373,18 @@ but it’s reasonably simple.</p>
   };</pre></div>
           
         
+          <h4 id="ispoweroftwo">isPowerOfTwo</h4>
+<p>Determines whether a number is a power of two.</p>
+
+          
+            <div class='highlight'><pre>  math.isPowerOfTwo = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
+    <span class="hljs-keyword">if</span>(math.isArray(obj)){
+      <span class="hljs-keyword">return</span> math.pluck(obj, key).map(math.isPowerOfTwo);
+    }
+    <span class="hljs-keyword">return</span> obj &amp;&amp; (obj &amp; (obj - <span class="hljs-number">1</span>)) === <span class="hljs-number">0</span>;
+  };</pre></div>
+          
+        
           <h4 id="isperfect">isPerfect</h4>
 <p>Determines whether a number is perfect.</p>
 <p>Because there are so few which can be represented as integers, it’s vastly
@@ -1353,6 +1398,23 @@ factors or check for Eulerian forms.</p>
       <span class="hljs-keyword">return</span> math.pluck(obj, key).map(math.isPerfect);
     }
     <span class="hljs-keyword">return</span> obj <span class="hljs-keyword">in</span> math.perfects;
+  };</pre></div>
+          
+        
+          <p>/#### isValidBinary
+Determines whether a number is a valid binary number.</p>
+
+          
+            <div class='highlight'><pre>  math.isValidBinary = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, key</span>)</span>{
+    <span class="hljs-keyword">if</span>(math.isArray(obj)){
+      <span class="hljs-keyword">return</span> math.pluck(obj, key).map(math.isValidBinary);
+    }
+    <span class="hljs-keyword">var</span> bits = [<span class="hljs-string">'0'</span>, <span class="hljs-string">'1'</span>];
+    <span class="hljs-keyword">var</span> n = obj + <span class="hljs-string">''</span>;
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; n.length; i++){
+      <span class="hljs-keyword">if</span>(!bits.includes(n[i])) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
   };</pre></div>
           
         
@@ -1838,6 +1900,30 @@ math.pow will not.</p>
     } <span class="hljs-keyword">else</span> {
       <span class="hljs-keyword">return</span> math.product(math.range(obj));
     }
+  };</pre></div>
+          
+        
+          <h4 id="permute">permute</h4>
+<p>Returns the number of distinct, ordered arrays of size <code>r</code> from <code>obj</code> elements.</p>
+
+          
+            <div class='highlight'><pre>  math.permute = math.permutations = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, r</span>)</span>{
+    <span class="hljs-keyword">if</span>(math.isArray(obj)){
+      <span class="hljs-keyword">return</span> obj.map(math.permute);
+    }
+    <span class="hljs-keyword">return</span> math.factorial(obj)/math.factorial(obj - r);
+  };</pre></div>
+          
+        
+          <h4 id="choose">choose</h4>
+<p>Returns the number of distinct, unordered sets of size <code>r</code> from <code>obj</code> elements.</p>
+
+          
+            <div class='highlight'><pre>  math.choose = math.combinations = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">obj, r</span>)</span>{
+    <span class="hljs-keyword">if</span>(math.isArray(obj)){
+      <span class="hljs-keyword">return</span> obj.map(math.choose);
+    }
+    <span class="hljs-keyword">return</span> math.permute(obj, r)/math.factorial(r);
   };</pre></div>
           
         
