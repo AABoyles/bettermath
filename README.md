@@ -57,7 +57,9 @@ math.median([1,2,3,4])
 
 ## TESTS
 
-[We got some of those too.](http://aaboyles.github.io/bettermath/test) Coverage isn't awesome, but it's a work in progress.
+[We got some of those too.](http://aaboyles.github.io/bettermath/tests/unit) Coverage isn't awesome, but it's a work in progress.
+
+Oh, in addition to unit testing, [benchmark testing](http://aaboyles.github.io/bettermath/tests/benchmark) is also on the to-do list.
 
 ## INSPIRATION
 
