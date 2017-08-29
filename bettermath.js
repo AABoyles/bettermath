@@ -280,6 +280,16 @@
     return !math.isPrime(obj);
   };
 
+
+  //#### isPowerOfTwo
+  // Determines whether a number is a power of two.
+  math.isPowerOfTwo = function(obj, key){
+    if(math.isArray(obj)){
+      return math.pluck(obj, key).map(math.isPowerOfTwo);
+    }
+    return obj && (obj & (obj - 1)) === 0;
+  };
+
   //#### isPerfect
   // Determines whether a number is perfect.
   //
