@@ -7,9 +7,9 @@
   math.orig = {};
   Object.getOwnPropertyNames(Math).forEach((key) => {
     if(typeof Math[key] == "function"){
-      return math.orig[key] = Math[key].bind({});
+      math.orig[key] = Math[key].bind({});
     } else {
-      return math.orig[key] = Math[key];
+      math.orig[key] = Math[key];
     }
   });
 
