@@ -304,6 +304,20 @@
     return obj in math.perfects;
   };
 
+  ///#### isValidBinary
+  // Determines whether a number is a valid binary number.
+  math.isValidBinary = function(obj, key){
+    if(math.isArray(obj)){
+      return math.pluck(obj, key).map(math.isValidBinary);
+    }
+    var bits = ['0', '1'];
+    var n = obj + '';
+    for(var i = 0; i < n.length; i++){
+      if(!bits.includes(n[i])) return false;
+    }
+    return true;
+  };
+
   //## Randomizers
   // Randomizers provide sources of pseudo-randomly values. These are largely
   // based on Math.random, which is not cryptographically secure. Accordingly,
