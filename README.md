@@ -6,7 +6,7 @@ Copyright 2017 by Tony Boyles
 
 bettermath is a javascript module for a variety of useful numerical computations on arrays of numbers.
 
-It's designed to work seamlessly as a [mixin](https://en.wikipedia.org/wiki/Mixin) with the standard `Math` object, However, I know that extending standard globals is usually a bad idea, so it doesn't do it automatically.
+It's designed to work seamlessly as a [mixin](https://en.wikipedia.org/wiki/Mixin) with the standard `Math` object, However, extending standard globals is usually a bad idea, so it doesn't do it automatically.
 
 ## INSTALLATION
 
@@ -63,15 +63,16 @@ Oh, in addition to unit testing, [benchmark testing](http://aaboyles.github.io/b
 
 ## INSPIRATION
 
-This project is a direct result of the fact that I'm basically an R coder. In R the fundamental data structure is a Vector. While there isn't a perfect analog in Javascript, arrays of numbers can serve for many similar purposes. But Javascript arrays don't have a ton of useful mathematical methods. For example, to multiply the elements of a vector by a scalar in R, you'd do something like this:
+This project is strongly influenced by the R Programming language. In R, the fundamental data structure is a Vector. While there isn't a perfect analog in core Javascript, arrays of numbers can serve for many similar purposes. But Javascript arrays don't have a ton of useful mathematical methods. For example, to multiply the elements of a vector by a scalar in R, you'd just multiply the vector by the scalar, like this:
 
-```r
+```R
 myVector <- c(1,2,3,4,5)
 scalar <- 10
 myVector * scalar
 > c(10,20,30,40,50)
 ```
-In contrast, javascript requires us to employ some sort of loop:
+
+In contrast, Javascript requires us to employ some sort of loop:
 
 ```javascript
 var myArray = [1,2,3,4,5];
@@ -84,7 +85,7 @@ output
 > [10,20,30,40,50]
 ```
 
-While we don't really want to mess with the primitives in javascript to make it work more like R, we can at least define a function to do the work for us.
+In the interest of avoiding duplication of efforts, we can at least define a function to do the work for us.
 
 ```javascript
 function scale(vector, scalar){
@@ -106,6 +107,8 @@ scale(myArray, scalar);
 ```
 
 Now, let's do that with dozens of functions. That's why this project exists.
+
+*Side Note*: We could, hypothetically, extend the prototype of the array in Javascript to contain a variety of methods like this. In fact, this is the approach taken by MooTools' [Array.Extras](https://mootools.net/more/docs/1.6.0/Types/Array.Extras), one of the ancestors of this project. However, the safety of doing this is too strong an assumption for many environments (the same reasoning underlies bettermath's architectural decision not to override the `Math` object by default).
 
 This project started as a fork of [underscore.math](https://github.com/syntagmatic/underscore.math), but it's gotten pretty far removed for a simple fork. Some other sources of inspiration for this include:
 
@@ -156,13 +159,11 @@ Some things to note:
 * Please check for arrays first.
 * Where possible, call `map()` and pass the function itself.
 * After the Array check, then put your function logic and return.
-* There is a [test file](https://github.com/AABoyles/bettermath/blob/master/test/tests.js). Writing additional tests for your function is also enthusiastically encouraged.
+* There is a [tests directory](https://github.com/AABoyles/bettermath/blob/master/tests/tests.js). Writing unit tests (for both the `math` global and the `Math` mixin) and benchmark tests for your function are enthusiastically encouraged.
 
 ### Reducers
 
-I plan to write a ton of reducers in the future, but the need for them is slightly less urgent. Because they're more unique than mappers, I don't have a specific design pattern in mind.
-
-Some opinions I'm going to enforce:
+A ton of new reducers are planned for future releases, but the need for them is slightly less urgent. Because they're more unique than mappers, there's no dogmatic design pattern. However, some guidelines will be enforced:
 
 * In general, if the reducer takes no arguments but an array of numbers, also include a key argument and call `math.pluck(obj, key)` first thing. That will allow the reducer to act on arrays of objects, as well as arrays of numbers.
 
@@ -171,10 +172,10 @@ Some sources of reducers I'm planning to mine for implementations:
 * https://en.wikipedia.org/wiki/Central_tendency#Measures_of_central_tendency
 * https://en.wikipedia.org/wiki/Statistical_dispersion
 
-A note on non-commutative reducers:
+*A note on non-commutative reducers:*
 
-If you're curions, there's no implementation of difference or quotient because
-subraction and division are non-commutative, which makes them (modestly)
+If you're curious, there's no implementation of difference or quotient because
+subtraction and division are non-commutative, which makes them (modestly)
 difficult to reason about in a sufficiently general way. Accordingly, it seems
 better that someone who needs such a function actually implement the logic
 themselves. I am open to compelling arguments otherwise, if you'd like to
@@ -182,11 +183,11 @@ themselves. I am open to compelling arguments otherwise, if you'd like to
 
 ### Helpers
 
-One thing I want to avoid is writing any more helpers than necessary. If you write one, please have a compelling reason (i.e. a mapper or reducer which requires it) and include an explanation in the commit message.
+If a function can complete its task without additional helpers, it definitely should. If you write one, please have a compelling reason (i.e. a mapper or reducer which requires it) and include an explanation in the commit message.
 
 ### Functions that don't work on Numbers or Arrays of Numbers
 
-That's not what this library is for. Please don't write any.
+That's not what this library is for. Please don't submit pull requests for any.
 
 ## LICENSE
 
