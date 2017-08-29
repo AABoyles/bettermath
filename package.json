@@ -22,9 +22,11 @@
   "homepage": "https://aaboyles.github.io/bettermath",
   "dependencies": {},
   "devDependencies": {
+    "benchmark": "^2.1.4",
     "docco": "^0.7.0",
+    "jshint": "^2.9.5",
     "qunit": "^1.0.0",
     "tonys-cool-docco-theme": "git+https://github.com/AABoyles/Tonys-cool-docco-theme.git",
-    "uglify-es": "^3.0.4"
+    "uglify-es": "^3.0.28"
   }
 }
