@@ -705,6 +705,24 @@
     }
   };
 
+  //#### permute
+  // Returns the number of distinct, ordered arrays of size `r` from `obj` elements.
+  math.permute = math.permutations = function(obj, r){
+    if(math.isArray(obj)){
+      return obj.map(math.permute);
+    }
+    return math.factorial(obj)/math.factorial(obj - r);
+  };
+
+  //#### choose
+  // Returns the number of distinct, unordered sets of size `r` from `obj` elements.
+  math.choose = math.combinations = function(obj, r){
+    if(math.isArray(obj)){
+      return obj.map(math.choose);
+    }
+    return math.permute(obj, r)/math.factorial(r);
+  };
+
   //#### copySign
   // Given a number, copies the sign of b onto obj
   //
